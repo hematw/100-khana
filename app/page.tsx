@@ -3,6 +3,8 @@
 import { useMutation, useQuery } from "convex/react";
 import { api } from "../convex/_generated/api";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 
 export default function Home() {
   return (
@@ -41,14 +43,9 @@ function Content() {
         is persisted in the Convex cloud database!
       </p>
       <p>
-        <button
-          className="bg-foreground text-background text-sm px-4 py-2 rounded-md"
-          onClick={() => {
-            void addNumber({ value: Math.floor(Math.random() * 10) });
-          }}
-        >
+        <Button onClick={() => void addNumber({ value: Math.floor(Math.random() * 10) })}>
           Add a random number
-        </button>
+        </Button>
       </p>
       <p>
         Numbers:{" "}
@@ -58,14 +55,14 @@ function Content() {
       </p>
       <p>
         Edit{" "}
-        <code className="text-sm font-bold font-mono bg-slate-200 dark:bg-slate-800 px-1 py-0.5 rounded-md">
+        <code className="text-sm font-bold font-mono px-1 py-0.5 rounded-md">
           convex/myFunctions.ts
         </code>{" "}
         to change your backend
       </p>
       <p>
         Edit{" "}
-        <code className="text-sm font-bold font-mono bg-slate-200 dark:bg-slate-800 px-1 py-0.5 rounded-md">
+        <code className="text-sm font-bold font-mono px-1 py-0.5 rounded-md">
           app/page.tsx
         </code>{" "}
         to change your frontend
@@ -122,11 +119,11 @@ function ResourceCard({
   href: string;
 }) {
   return (
-    <div className="flex flex-col gap-2 bg-slate-200 dark:bg-slate-800 p-4 rounded-md h-28 overflow-auto">
+    <Card className="flex flex-col gap-2 p-4 rounded-md h-28 overflow-auto">
       <a href={href} className="text-sm underline hover:no-underline">
         {title}
       </a>
       <p className="text-xs">{description}</p>
-    </div>
+    </Card>
   );
 }
