@@ -1,11 +1,10 @@
 import Footer from "@/src/components/Footer";
 import Header from "@/src/components/Header";
-import { useRouter } from "next/navigation";
+import { redirect } from "next/navigation";
 import { Button } from "../components/ui/button";
 import Image from "next/image";
 
 export default function NotFound() {
-  const router = useRouter();
   return (
     <>
       <Header />
@@ -15,7 +14,7 @@ export default function NotFound() {
           <h3 className="text-3xl font-semibold mt-10">Looks you are lost?</h3>
           <p className="mt-2">Requested page not found in our server</p>
           <Button
-            onClick={() => router.back()}
+            onClick={() => redirect("/")}
             className="w-full mt-6rounded-lg shadow-lg"
           >
             Go to Home

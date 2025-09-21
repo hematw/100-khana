@@ -6,6 +6,12 @@
 
 
 
+@import url("../assets/fonts/Poppins/css/poppins.css");
+@import url("../assets/fonts/ClashDisplay_Complete/Fonts/WEB/css/clash-display.css");
+@import url('https://fonts.googleapis.com/css2?family=Smooch+Sans:wght@100..900&display=swap');
+
+
+
 @layer base {
   html, body {
     color: var(--foreground);
@@ -163,10 +169,6 @@
   }
 }
 
-
-@import url("./assets/fonts/Poppins/css/poppins.css");
-@import url("./assets/fonts/ClashDisplay_Complete/Fonts/WEB/css/clash-display.css");
-@import url('https://fonts.googleapis.com/css2?family=Smooch+Sans:wght@100..900&display=swap');
 
 :root {
   --first: #f14949;

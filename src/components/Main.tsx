@@ -1,19 +1,22 @@
 import { ArrowUpRight } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 // import { Input } from "@heroui/input";
-import { Divider } from "@heroui/divider";
 import ShadowedCard from "./cards/ShadowedCard";
-import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";
-import { Button } from "@heroui/button";
-import { Select, SelectItem } from "@heroui/select";
-import { Form } from "@heroui/form";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/src/components/ui/card";
+import { Button } from "@/src/components/ui/button";
+import { Select, SelectItem } from "@/src/components/ui/select";
+import { Form } from "@/src/components/ui/form";
 import { useQuery } from "@tanstack/react-query";
-import axiosIns from "@/axios";
-import { Link, useNavigate } from "react-router-dom";
 import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
-import { TCity } from "./property-form/components/address";
-import { getCities } from "@/api";
-import { TListingType } from "@/types";
+import { getCities } from "@/src/api";
+import { ISearchForm, TListingType } from "@/src/types";
+import { Separator } from "@/src/components/ui/separator";
+import Link from "next/link";
 
 // const images = [
 //   "/photos/1.jpg",
@@ -32,14 +35,11 @@ import { TListingType } from "@/types";
 //   images,
 // };
 
-
 export const listingTypes: TListingType[] = [
   { label: "Rental", value: "rental" },
   { label: "Sale", value: "sale" },
   { label: "Mortgage", value: "mortgage" },
 ];
-
-
 
 export default function Main() {
   const form = useForm<ISearchForm>({
@@ -64,7 +64,7 @@ export default function Main() {
 
   return (
     <>
-      <section className="max-w-screen-2xl xl:mx-auto -mt-28 h-screen md:max-h-[740px] xl:max-h-[800px] bg-[url(./landing-background.jpg)] bg-cover">
+      <section className="max-w-screen-2xl xl:mx-auto -mt-28 h-screen md:max-h-[740px] xl:max-h-[800px] bg-[url(../../landing-background.jpg)] bg-cover">
         <div className="relative h-full w-full flex items-center justify-center">
           <div className="h-full w-full bg-black/50 dark:block absolute top-0 left-0 hidden z-0"></div>
           <div className="space-y-4 z-10">
@@ -86,7 +86,6 @@ export default function Main() {
               <div className="min-w-full items-center bg-white dark:bg-zinc-800 flex rounded-lg p-2 ">
                 <div className="flex-1">
                   <Select
-                    items={listingTypes}
                     label="Listing Type"
                     placeholder="Select listing type"
                     selectionMode="multiple"
@@ -96,21 +95,21 @@ export default function Main() {
                     variant="faded"
                     onSelectionChange={(keys) => {
                       const selectedValues = Array.from(keys).map((key) =>
-                        String(key)
+                        String(key),
                       );
                       form.setValue("listingType", selectedValues);
                     }}
                   >
-                    {(item) => (
+                    {listingTypes.map((item) => (
                       <SelectItem key={item.value} textValue={item.value}>
                         <div className="flex gap-2 items-center">
                           <div className="flex flex-col">{item.value}</div>
                         </div>
                       </SelectItem>
-                    )}
+                    ))}
                   </Select>
                 </div>
-                <Divider
+                <Separator
                   orientation="vertical"
                   className="z-30 h-12 mx-1 dark:bg-gray-600"
                 />
@@ -159,7 +158,7 @@ export default function Main() {
                     )}
                   />
                 </div>
-                <Divider
+                <Separator
                   orientation="vertical"
                   className="z-30 h-12 mx-1 dark:bg-gray-600"
                 />
@@ -171,31 +170,30 @@ export default function Main() {
                     radius="sm"
                     color="primary"
                     variant="faded"
-                    items={[
+                    // value={[form.watch("min_price"), form.watch("max_price")]}
+                    onChange={(value) => {
+                      const [minPrice, maxPrice] = value.split(",");
+                      form.setValue("min_price", minPrice || "");
+                      form.setValue("max_price", maxPrice || "");
+                    }}
+                  >
+                    {[
                       { label: "free - 1K", value: [0, 1000] },
                       { label: "5K - 10K", value: [5000, 10000] },
                       { label: "10K - 20K", value: [10000, 20000] },
                       { label: "20K - 50K", value: [20000, 50000] },
                       { label: "50K - 100K", value: [50000, 100000] },
                       { label: "100K - 1M", value: [100000, 1000000] },
-                    ]}
-                    // value={[form.watch("min_price"), form.watch("max_price")]}
-                    onChange={({ target: { value } }) => {
-                      const [minPrice, maxPrice] = value.split(",");
-                      form.setValue("min_price", minPrice || "");
-                      form.setValue("max_price", maxPrice || "");
-                    }}
-                  >
-                    {(item) => (
+                    ].map((item) => (
                       <SelectItem key={item.value} textValue={item.value}>
                         <div className="flex gap-2 items-center">
                           <div className="flex flex-col">{item.label}</div>
                         </div>
                       </SelectItem>
-                    )}
+                    ))}
                   </Select>
                 </div>
-                <Divider
+                <Separator
                   orientation="vertical"
                   className="z-30 h-12 mx-1 dark:bg-gray-600"
                 />
@@ -203,18 +201,16 @@ export default function Main() {
                   <Button
                     // type="submit"
                     className="py-6"
-                    radius="sm"
-                    variant="solid"
                     color="primary"
-                    onPress={() => {
+                    onClick={() => {
                       const formValues = form.getValues();
                       const truthyValues = Object.fromEntries(
                         Object.entries(formValues).filter(([_, value]) =>
-                          Boolean(value?.length)
-                        )
+                          Boolean(value?.length),
+                        ),
                       );
                       const queryStrings = new URLSearchParams(
-                        truthyValues
+                        truthyValues,
                       ).toString();
                       console.log(queryStrings);
                       navigate(`/properties?${queryStrings}`);
@@ -228,10 +224,11 @@ export default function Main() {
           </div>
 
           <Link
-            to="./properties"
+            href="./properties"
             className="flex items-center text-white shadow-md absolute bottom-6 hover:scale-95 transition-all duration-150 left-1/2 -translate-x-1/2"
           >
-            Find Properties<ArrowUpRight />
+            Find Properties
+            <ArrowUpRight />
           </Link>
         </div>
         {/* {  <div className="w-full h-screen flex items-center justify-center bg-black/80 fixed top-0 left-0 z-50">} */}
@@ -245,7 +242,7 @@ export default function Main() {
         </h2>
         <div className="flex justify-center items-stretch gap-8 flex-nowrap overflow-auto py-10">
           <ShadowedCard className="max-w-96 min-w-80 border border-default-300">
-            <CardBody className=" flex flex-col justify-center items-center text-center">
+            <CardContent className=" flex flex-col justify-center items-center text-center">
               <CardHeader className="flex justify-center">
                 <img src="/For sale-bro.svg" height={200} width={200} alt="" />
               </CardHeader>
@@ -262,10 +259,10 @@ export default function Main() {
               <Button className="min-w-full mt-8 " color="primary">
                 Post a Listing
               </Button>
-            </CardBody>
+            </CardContent>
           </ShadowedCard>
           <ShadowedCard className="max-w-96 min-w-80 border border-default-300">
-            <CardBody className=" flex flex-col justify-center items-center text-center">
+            <CardContent className=" flex flex-col justify-center items-center text-center">
               <CardHeader className="flex justify-center">
                 <img
                   src="/House searching-amico.svg"
@@ -287,10 +284,10 @@ export default function Main() {
               <Button className="min-w-full mt-8 " color="primary">
                 Browse Properties
               </Button>
-            </CardBody>
+            </CardContent>
           </ShadowedCard>
           <ShadowedCard className="max-w-96 min-w-80 border border-default-300">
-            <CardBody className=" flex flex-col justify-center items-center text-center">
+            <CardContent className=" flex flex-col justify-center items-center text-center">
               <CardHeader className="flex justify-center">
                 <img
                   src="/Apartment rent-bro.svg"
@@ -313,7 +310,7 @@ export default function Main() {
               <Button className="min-w-full mt-8 " color="primary">
                 Rent Out Property
               </Button>
-            </CardBody>
+            </CardContent>
           </ShadowedCard>
         </div>
       </section>
@@ -324,31 +321,31 @@ export default function Main() {
         <div className="flex justify-center gap-8 p-4 overflow-auto">
           <Card className="min-w-48 md:min-w-64 flex justify-center items-center flex-col overflow-hidden text-center border border-default-300">
             <img src="/villa.jpg" alt="" className="w-64" />
-            <CardBody className="py-4 space-y-2 gap-2 flex-col items-start">
+            <CardContent className="py-4 space-y-2 gap-2 flex-col items-start">
               <h4 className="text-2xl">2,394</h4>
               <p>Villas</p>
-            </CardBody>
+            </CardContent>
           </Card>
           <Card className="min-w-48 md:min-w-64 flex justify-center items-center flex-col overflow-hidden text-center border border-default-300">
             <img src="/residential.jpg" alt="" className="w-64" />
-            <CardBody className="py-4 space-y-2 gap-2 flex-col items-start">
+            <CardContent className="py-4 space-y-2 gap-2 flex-col items-start">
               <h4 className="text-2xl">13,902</h4>
               <p>Residential Houses</p>
-            </CardBody>
+            </CardContent>
           </Card>
           <Card className="min-w-48 md:min-w-64 flex justify-center items-center flex-col overflow-hidden text-center border border-default-300">
             <img src="/apartment.jpg" alt="" className="w-64" />
-            <CardBody className="py-4 space-y-2 gap-2 flex-col items-start">
+            <CardContent className="py-4 space-y-2 gap-2 flex-col items-start">
               <h4 className="text-2xl">8,521</h4>
               <p>Apartments</p>
-            </CardBody>
+            </CardContent>
           </Card>
           <Card className="min-w-48 md:min-w-64 flex justify-center items-center flex-col overflow-hidden text-center border border-default-300">
             <img src="/business-center.jpg" alt="" className="w-64" />
-            <CardBody className="py-4 space-y-2 gap-2 flex-col items-start">
+            <CardContent className="py-4 space-y-2 gap-2 flex-col items-start">
               <h4 className="text-2xl">6,200</h4>
               <p>Commercial & Office</p>
-            </CardBody>
+            </CardContent>
           </Card>
         </div>
       </section>
@@ -358,28 +355,28 @@ export default function Main() {
         </h2>
         <div className="flex justify-center gap-8 overflow-auto p-4">
           <Card className="min-w-48 md:min-w-64 w-64 flex justify-center items-center flex-col overflow-hidden text-center border border-default-300">
-            <CardBody className="py-4 space-y-2 h-full flex flex-col justify-between">
+            <CardContent className="py-4 space-y-2 h-full flex flex-col justify-between">
               <img src="/Connected world-bro.svg" alt="" className="w-60" />
               <CardFooter className="text-center">
                 Connect with trusted agents & property owners
               </CardFooter>
-            </CardBody>
+            </CardContent>
           </Card>
           <Card className="min-w-48 md:min-w-64 w-64 flex justify-center items-center flex-col overflow-hidden text-center border border-default-300">
-            <CardBody className="py-4 space-y-2 h-full flex flex-col justify-between">
+            <CardContent className="py-4 space-y-2 h-full flex flex-col justify-between">
               <img src="/Houses-pana.svg" alt="" className="w-60" />
               <CardFooter className="text-center">
                 Compare & explore hundreds of listings effortlessly
               </CardFooter>
-            </CardBody>
+            </CardContent>
           </Card>
           <Card className="min-w-48 md:min-w-64 w-64 flex justify-center items-center flex-col overflow-hidden text-center border border-default-300">
-            <CardBody className="py-4 space-y-2 h-full flex flex-col justify-between">
+            <CardContent className="py-4 space-y-2 h-full flex flex-col justify-between">
               <img src="/Directions-bro.svg" alt="" className="w-60" />
               <CardFooter className="text-center">
                 Buy or rent properties in top locations across the country
               </CardFooter>
-            </CardBody>
+            </CardContent>
           </Card>
         </div>
       </section>

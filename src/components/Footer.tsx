@@ -1,5 +1,5 @@
 import { Phone, Instagram, Send, ChevronDown } from "lucide-react";
-import { Link } from "react-router-dom";
+import Link from "next/link";
 
 export default function Footer() {
   return (
@@ -7,7 +7,7 @@ export default function Footer() {
       {/* Main Banner */}
       <div className="container mx-auto mb-12 text-center">
         <h1 className="text-3xl md:text-4xl font-bold mb-4">
-          From searching to settling, 100-Khana is with you!
+          From searching href settling, 100-Khana is with you!
         </h1>
       </div>
 
@@ -28,7 +28,7 @@ export default function Footer() {
               Experience the Joy of Quick and Easy Property Finding
             </p>
             <p className="text-sm leading-relaxed text-gray-500">
-              100-Khana is your bridge to quickly browse through thousands of
+              100-Khana is your bridge href quickly browse through thousands of
               listings and find your perfect property.
             </p>
           </div>
@@ -37,19 +37,19 @@ export default function Footer() {
           <div className="space-y-4 col-span-3">
             <h3 className="font-bold text-lg mb-4">Services</h3>
             <div className="flex flex-col gap-2">
-              <Link to="#" className="hover:text-primary-500">
+              <Link href="#" className="hover:text-primary-500">
                 Rent
               </Link>
-              <Link to="#" className="hover:text-primary-500">
+              <Link href="#" className="hover:text-primary-500">
                 Buy
               </Link>
-              <Link to="#" className="hover:text-primary-500">
+              <Link href="#" className="hover:text-primary-500">
                 Free Property Listing
               </Link>
-              <Link to="#" className="hover:text-primary-500">
+              <Link href="#" className="hover:text-primary-500">
                 Real Estate
               </Link>
-              <Link to="#" className="hover:text-primary-500">
+              <Link href="#" className="hover:text-primary-500">
                 Real Estate Consultants
               </Link>
             </div>
@@ -59,16 +59,16 @@ export default function Footer() {
           <div className="space-y-4 col-span-3">
             <h3 className="font-bold text-lg mb-4">Most Popular Searches</h3>
             <div className="flex flex-col gap-2">
-              <Link to="#" className="hover:text-primary-500">
+              <Link href="#" className="hover:text-primary-500">
                 Apartments Near Metro
               </Link>
-              <Link to="#" className="hover:text-primary-500">
+              <Link href="#" className="hover:text-primary-500">
                 Homes Near Main Street
               </Link>
-              <Link to="#" className="hover:text-primary-500">
+              <Link href="#" className="hover:text-primary-500">
                 One Bedroom Apartments
               </Link>
-              <Link to="#" className="text-primary-500 flex items-center gap-1">
+              <Link href="#" className="text-primary-500 flex items-center gap-1">
                 View More
                 <ChevronDown />
               </Link>
@@ -79,15 +79,15 @@ export default function Footer() {
           <div className="space-y-4 col-span-3 md:col-span-2">
             <h3 className="font-bold text-lg mb-4">Stay Connected</h3>
             <div className="flex flex-col gap-3">
-              <Link to="#" className="flex items-center gap-2">
+              <Link href="#" className="flex items-center gap-2">
                 <Phone className="text-primary-500 h-5 w-5" />
                 <span>Phone</span>
               </Link>
-              <Link to="#" className="flex items-center gap-2">
+              <Link href="#" className="flex items-center gap-2">
                 <Instagram className="text-primary-500 h-5 w-5" />
                 <span>Instagram</span>
               </Link>
-              <Link to="#" className="flex items-center gap-2">
+              <Link href="#" className="flex items-center gap-2">
                 <Send className="text-primary-500 h-5 w-5" />
                 <span>Telegram</span>
               </Link>
@@ -96,21 +96,21 @@ export default function Footer() {
           <div className="grid grid-cols-1 col-span-3 md:grid-cols-3 lg:col-span-12 gap-4 mb-8">
             <div className="space-y-2">
               <h4 className="font-semibold">Kabul Real Estate</h4>
-              <Link to="#" className="text-primary-500 flex items-center gap-1">
+              <Link href="#" className="text-primary-500 flex items-center gap-1">
                 View More
                 <ChevronDown />
               </Link>
             </div>
             <div className="space-y-2">
               <h4 className="font-semibold">Badakhshan Real Estate</h4>
-              <Link to="#" className="text-primary-500 flex items-center gap-1">
+              <Link href="#" className="text-primary-500 flex items-center gap-1">
                 View More
                 <ChevronDown />
               </Link>
             </div>
             <div className="space-y-2">
               <h4 className="font-semibold">Herat Real Estate</h4>
-              <Link to="#" className="text-primary-500 flex items-center gap-1">
+              <Link href="#" className="text-primary-500 flex items-center gap-1">
                 View More
                 <ChevronDown />
               </Link>
