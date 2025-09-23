@@ -1,29 +1,30 @@
-import { IPropertyForm, ISearchForm } from "@/src/types";
-import { useSearchParams } from "next/navigation";
-import { Controller, Form, useForm } from "react-hook-form";
+import { PropertyForm, ISearchForm, TCategory } from "@/src/types";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Controller, useForm } from "react-hook-form";
 import { useQuery } from "@tanstack/react-query";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/src/components/ui/tooltip";
 import { Button } from "@/src/components/ui/button";
-import { CircleX } from "lucide-react";
+import { CircleX, Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import PropertyCard from "@/src/components/house-card";
+import axiosIns from "@/src/axios";
+import { getCategories, getCities } from "@/src/actions";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/src/components/ui/select";
+import { Input } from "@/src/components/ui/input";
+import { Form } from "@/src/components/ui/form";
+import { saveOrRemoveToWishlist } from "@/src/lib/utils";
 
-type PropertyWithID = IPropertyForm & Record<"_id", string>;
-type TAdvanceSearch = ISearchForm & {
+type PropertyWithID = PropertyForm & Record<"_id", string>;
+type AdvanceSearch = ISearchForm & {
   area?: string;
   category?: string[];
 };
 
 function Properties() {
-  const location = useLocation();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
-  const form = useForm<TAdvanceSearch>({
+  const form = useForm<AdvanceSearch>({
     defaultValues: {
       listingType: [],
       city: "",
@@ -34,10 +35,12 @@ function Properties() {
     },
   });
 
-  const { data, isLoading, isError, error, refetch } = useQuery({
-    queryKey: ["properties", location.search],
+  const paramsString = searchParams?.toString() ?? "";
+
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ["properties", paramsString],
     queryFn: async () => {
-      const res = await axiosIns.get(`/properties${location.search}`);
+      const res = await axiosIns.get(`/properties${paramsString ? `?${paramsString}` : ""}`);
       return res.data;
     },
     // enabled: false,
@@ -58,194 +61,116 @@ function Properties() {
   if (isLoading) return <p>Loading...</p>;
   if (isError) console.error(error);
 
+  const listingTypes = [
+    { label: "Rental", value: "rental" },
+    { label: "Sale", value: "sale" },
+    { label: "Mortgage", value: "mortgage" },
+  ];
+
+  const toName = (val: PropertyForm["city"]) => (typeof val === "string" ? val : val.name);
+
   return (
     <section className="max-w-screen-2xl mx-auto p-6">
       <div className="px-12">
-        <Form
-          onSubmit={form.handleSubmit(() => {
-            refetch();
-          })}
-          className="mx-10"
-        >
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(() => {
+              const formValues = form.getValues();
+              const entries = Object.entries(formValues).filter(([, value]) => {
+                if (Array.isArray(value)) return value.length > 0;
+                if (typeof value === "string") return value.length > 0;
+                return false;
+              });
+              const params = new URLSearchParams();
+              for (const [key, value] of entries as Array<[string, string | string[]]>) {
+                if (Array.isArray(value)) {
+                  for (const v of value) params.append(key, v);
+                } else {
+                  params.set(key, value);
+                }
+              }
+              const qs = params.toString();
+              router.push(`/properties${qs ? `?${qs}` : ""}`);
+            })}
+            className="mx-10"
+          >
           <div className="min-w-full items-center flex gap-2 rounded-sm p-2 ">
             <Controller
               control={form.control}
               name="city"
               render={({ field }) => (
-                <Autocomplete
-                  size="sm"
-                  radius="sm"
-                  color="primary"
-                  variant="faded"
-                  label="City"
-                  items={cities}
-                  {...field}
-                  placeholder="e.g. Kabul..."
-                  defaultSelectedKey={field.value}
-                  onSelectionChange={(selectedCity) =>
-                    form.setValue("city", selectedCity?.toString() || "")
-                  }
-                >
-                  {(item) => (
-                    <AutocompleteItem key={item._id}>
-                      {item.name}
-                    </AutocompleteItem>
-                  )}
-                </Autocomplete>
+                <Select value={field.value} onValueChange={(v) => form.setValue("city", v)}>
+                  <SelectTrigger className="w-48">
+                    <SelectValue placeholder="City e.g. Kabul" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {cities.map((c: { _id: string; name: string }) => (
+                      <SelectItem key={c._id} value={c._id}>{c.name}</SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               )}
             />
-            <Select
-              items={listingTypes}
-              label="Listing Type"
-              placeholder="Select listing type"
-              selectionMode="multiple"
-              size="sm"
-              radius="sm"
-              color="primary"
-              variant="faded"
-              defaultSelectedKeys={form.getValues("listingType")}
-              onSelectionChange={(keys) => {
-                const selectedValues = Array.from(keys).map((key) =>
-                  String(key),
-                );
-                form.setValue("listingType", selectedValues);
-              }}
-            >
-              {(item) => (
-                <SelectItem key={item.value} textValue={item.value}>
-                  <div className="flex gap-2 items-center">
-                    <div className="flex flex-col">{item.value}</div>
-                  </div>
-                </SelectItem>
-              )}
+            <Select value={form.watch("listingType")[0] || ""} onValueChange={(v) => form.setValue("listingType", [v])}>
+              <SelectTrigger className="w-48">
+                <SelectValue placeholder="Listing Type" />
+              </SelectTrigger>
+              <SelectContent>
+                {listingTypes.map((lt) => (
+                  <SelectItem key={lt.value} value={lt.value}>{lt.label}</SelectItem>
+                ))}
+              </SelectContent>
             </Select>
-            <Select
-              label="Price Range"
-              placeholder="e.g. 5K - 10K..."
-              size="sm"
-              radius="sm"
-              color="primary"
-              variant="faded"
-              items={[
-                { label: "free - 1K", value: [0, 1000] },
-                { label: "1K - 5K", value: [1000, 5000] },
-                { label: "5K - 10K", value: [5000, 10000] },
-                { label: "10K - 20K", value: [10000, 20000] },
-                { label: "20K - 50K", value: [20000, 50000] },
-                { label: "50K - 100K", value: [50000, 100000] },
-                { label: "100K - 1M", value: [100000, 1000000] },
-              ]}
-              defaultSelectedKeys={
-                form.getValues("max_price")
-                  ? [
-                      form.getValues("min_price"),
-                      form.getValues("max_price"),
-                    ].join()
-                  : []
-              }
-              onChange={({ target: { value } }) => {
-                const [minPrice, maxPrice] = value.split(",");
-                form.setValue("min_price", minPrice || "");
-                form.setValue("max_price", maxPrice || "");
-              }}
-            >
-              {(item) => (
-                <SelectItem
-                  key={`${item.value[0]},${item.value[1]}`}
-                  textValue={item.label}
-                >
-                  <div className="flex gap-2 items-center">
-                    <div className="flex flex-col">{item.label}</div>
-                  </div>
-                </SelectItem>
-              )}
+            <Select onValueChange={(value) => {
+              const [minPrice, maxPrice] = value.split(",");
+              form.setValue("min_price", minPrice || "");
+              form.setValue("max_price", maxPrice || "");
+            }}>
+              <SelectTrigger className="w-56">
+                <SelectValue placeholder="Price Range" />
+              </SelectTrigger>
+              <SelectContent>
+                {[
+                  { label: "free - 1K", value: "0,1000" },
+                  { label: "1K - 5K", value: "1000,5000" },
+                  { label: "5K - 10K", value: "5000,10000" },
+                  { label: "10K - 20K", value: "10000,20000" },
+                  { label: "20K - 50K", value: "20000,50000" },
+                  { label: "50K - 100K", value: "50000,100000" },
+                  { label: "100K - 1M", value: "100000,1000000" },
+                ].map((opt) => (
+                  <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                ))}
+              </SelectContent>
             </Select>
-            <Select
-              label="Property type"
-              placeholder="e.g. Apartment"
-              variant="faded"
-              size="sm"
-              radius="sm"
-              color="primary"
-              // isMultiline={true}
-              items={categories}
-              defaultSelectedKeys={form.getValues("category")}
-              isInvalid={!!form.formState.errors.category}
-              errorMessage={form.formState.errors.category?.message}
-              onSelectionChange={(keys) => {
-                const selectedValues = Array.from(keys).map((key) =>
-                  String(key),
-                );
-                form.setValue("category", selectedValues);
-              }}
-              selectionMode="multiple"
-            >
-              {(item) => (
-                <SelectItem key={item._id} textValue={item.name}>
-                  <div className="flex gap-2 items-center">
-                    <div className="flex flex-col">{item.name}</div>
-                  </div>
-                </SelectItem>
-              )}
+            <Select value={(form.watch("category")?.[0] as string) || ""} onValueChange={(v) => form.setValue("category", [v])}>
+              <SelectTrigger className="w-56">
+                <SelectValue placeholder="Property type" />
+              </SelectTrigger>
+              <SelectContent>
+                {categories.map((c: TCategory) => (
+                  <SelectItem key={c._id} value={c._id}>{c.name}</SelectItem>
+                ))}
+              </SelectContent>
             </Select>
-            <Input
-              label="Area"
-              placeholder="e.g. 100m2"
-              type="number"
-              size="sm"
-              variant="faded"
-              color="primary"
-              radius="sm"
-              min={0}
-              defaultValue={form.getValues("area")}
-              classNames={{
-                inputWrapper: "w-24",
-                base: "w-24",
-              }}
-              {...form.register("area")}
-            />
+            <Input type="number" placeholder="Area e.g. 100m2" className="w-28" defaultValue={form.getValues("area") || ""} {...form.register("area")} />
             <div className="flex items-center gap-2">
-              <Tooltip content="Search" showArrow>
-                <Button
-                  // type="submit"
-                  isIconOnly
-                  startContent={<SearchIcon />}
-                  className="py-4"
-                  radius="sm"
-                  size="lg"
-                  variant="solid"
-                  color="primary"
-                  onPress={() => {
-                    const formValues = form.getValues();
-                    const truthyValues = Object.fromEntries(
-                      Object.entries(formValues).filter(([_, value]) =>
-                        Boolean(value?.length),
-                      ),
-                    );
-                    const queryStrings = new URLSearchParams(
-                      truthyValues,
-                    ).toString();
-                    setSearchParams(queryStrings);
-                    // refetch();
-                  }}
-                />
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger>
-                  <Button
-                    size="icon"
-                    color="primary"
-                    onClick={() => {
-                      form.reset();
-                    }}
-                  >
-                    <CircleX />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Clear search</TooltipContent>
-              </Tooltip>
+              <Button type="submit" className="py-4">
+                <Search />
+              </Button>
+              <Button
+                size="icon"
+                variant="outline"
+                onClick={() => {
+                  form.reset();
+                  router.push(`/properties`);
+                }}
+              >
+                <CircleX />
+              </Button>
             </div>
           </div>
+          </form>
         </Form>
       </div>
       <div className="px-4 lg:px-16 xl:mx-auto grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-6 gap-y-10 items-stretch place-items-center py-6">
@@ -253,7 +178,7 @@ function Properties() {
           data?.properties.map((property: PropertyWithID) => (
             <Link href={`/properties/${property._id}`} key={property._id}>
               <PropertyCard
-                address={`${property.city.name}, ${property.district.name}, ${property.road}, ${property.street}`}
+                address={`${toName(property.city)}, ${typeof (property as unknown as {district: string | { name: string }}).district === 'string' ? (property as unknown as {district: string}).district : ((property as unknown as {district: { name?: string }}).district?.name ?? '')}, ${property.road}, ${property.street}`}
                 price={+property.price}
                 listingType={property.listingType.join(", ")}
                 images={property.images as string[]}

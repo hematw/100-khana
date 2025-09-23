@@ -1,9 +1,9 @@
-import { Input } from "@heroui/input";
+import { Input } from "@/src/components/ui/input";
 import { UseFormReturn } from "react-hook-form";
-import { IPropertyForm } from "..";
+import { PropertyForm } from "..";
 import { ChangeEvent } from "react";
 
-function OtherDescription({ form }: { form: UseFormReturn<IPropertyForm> }) {
+function OtherDescription({ form }: { form: UseFormReturn<PropertyForm> }) {
   const descValue = form.getValues("description");
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>, index: number) => {

@@ -11,7 +11,7 @@ import {
   Settings2,
   SquareTerminal,
 } from "lucide-react";
-import { Button } from "@heroui/button";
+import { Button } from "@/src/components/ui/button";
 
 import {
   Drawer,
@@ -19,15 +19,15 @@ import {
   DrawerHeader,
   DrawerBody,
   DrawerFooter,
-} from "@heroui/drawer";
+} from "@/src/components/ui/drawer";
 
 import {
   Dropdown,
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
-} from "@heroui/dropdown";
-import { Avatar } from "@heroui/avatar";
+} from "@/src/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/src/components/ui/avatar";
 
 // Sample Data
 const data = {

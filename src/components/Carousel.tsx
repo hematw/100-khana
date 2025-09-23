@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Button } from "@heroui/button";
+import { Button } from "@/src/components/ui/button";
 
 type carouselProps = {
   images: string[];
@@ -33,22 +33,10 @@ const Carousel = ({ className = "", images }: carouselProps) => {
         ))}
       </div>
       <div className="px-2 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex justify-between opacity-0 w-full group-hover:opacity-100 duration-200">
-        <Button
-          isIconOnly
-          size="sm"
-          radius="full"
-          variant="faded"
-          onPress={goPrev}
-        >
+        <Button size="icon" variant="secondary" onClick={goPrev}>
           <ChevronLeft />
         </Button>
-        <Button
-          isIconOnly
-          size="sm"
-          radius="full"
-          variant="faded"
-          onPress={goNext}
-        >
+        <Button size="icon" variant="secondary" onClick={goNext}>
           <ChevronRight />
         </Button>
       </div>

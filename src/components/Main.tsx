@@ -9,12 +9,12 @@ import {
   CardHeader,
 } from "@/src/components/ui/card";
 import { Button } from "@/src/components/ui/button";
-import { Select, SelectItem } from "@/src/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/src/components/ui/select";
 import { Form } from "@/src/components/ui/form";
 import { useQuery } from "@tanstack/react-query";
-import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
-import { getCities } from "@/src/api";
-import { ISearchForm, TListingType } from "@/src/types";
+import { Input } from "@/src/components/ui/input";
+import { getCities } from "@/src/actions";
+import { ISearchForm, ListingType } from "@/src/types";
 import { Separator } from "@/src/components/ui/separator";
 import Link from "next/link";
 
@@ -35,7 +35,7 @@ import Link from "next/link";
 //   images,
 // };
 
-export const listingTypes: TListingType[] = [
+export const listingTypes: ListingType[] = [
   { label: "Rental", value: "rental" },
   { label: "Sale", value: "sale" },
   { label: "Mortgage", value: "mortgage" },
@@ -61,10 +61,10 @@ export default function Main() {
 
   console.log(form.watch());
   console.log(form.getValues());
-
+  // bg-[url(../../landing-background.jpg)]
   return (
     <>
-      <section className="max-w-screen-2xl xl:mx-auto -mt-28 h-screen md:max-h-[740px] xl:max-h-[800px] bg-[url(../../landing-background.jpg)] bg-cover">
+      <section className="max-w-screen-2xl xl:mx-auto -mt-28 h-screen md:max-h-[740px] xl:max-h-[800px]  bg-cover">
         <div className="relative h-full w-full flex items-center justify-center">
           <div className="h-full w-full bg-black/50 dark:block absolute top-0 left-0 hidden z-0"></div>
           <div className="space-y-4 z-10">
@@ -85,28 +85,15 @@ export default function Main() {
             >
               <div className="min-w-full items-center bg-white dark:bg-zinc-800 flex rounded-lg p-2 ">
                 <div className="flex-1">
-                  <Select
-                    label="Listing Type"
-                    placeholder="Select listing type"
-                    selectionMode="multiple"
-                    size="lg"
-                    radius="sm"
-                    color="primary"
-                    variant="faded"
-                    onSelectionChange={(keys) => {
-                      const selectedValues = Array.from(keys).map((key) =>
-                        String(key),
-                      );
-                      form.setValue("listingType", selectedValues);
-                    }}
-                  >
-                    {listingTypes.map((item) => (
-                      <SelectItem key={item.value} textValue={item.value}>
-                        <div className="flex gap-2 items-center">
-                          <div className="flex flex-col">{item.value}</div>
-                        </div>
-                      </SelectItem>
-                    ))}
+                  <Select value={form.watch("listingType")[0]} onValueChange={(v) => form.setValue("listingType", [v])}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select listing type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {listingTypes.map((item) => (
+                        <SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>
+                      ))}
+                    </SelectContent>
                   </Select>
                 </div>
                 <Separator
@@ -114,47 +101,11 @@ export default function Main() {
                   className="z-30 h-12 mx-1 dark:bg-gray-600"
                 />
                 <div className="flex-1">
-                  {/* <Controller
-                    name="search"
-                    control={form.control}
-                    render={({ field }) => (
-                      <Input
-                        label="Location"
-                        placeholder="Kabul..."
-                        size="lg"
-                        radius="sm"
-                        color="primary"
-                        variant="faded"
-                        {...field}
-                      />
-                    )}
-                  /> */}
                   <Controller
                     control={form.control}
                     name="city"
                     render={({ field }) => (
-                      <Autocomplete
-                        size="lg"
-                        radius="sm"
-                        color="primary"
-                        variant="faded"
-                        label="City"
-                        items={cities}
-                        {...field}
-                        placeholder="e.g. Kabul..."
-                        // isInvalid={!!form.formState.errors.city}
-                        // errorMessage={form.formState.errors.city?.message}
-                        defaultSelectedKey={field.value}
-                        onSelectionChange={(selectedCity) =>
-                          form.setValue("city", selectedCity?.toString() || "")
-                        }
-                      >
-                        {(item) => (
-                          <AutocompleteItem key={item._id}>
-                            {item.name}
-                          </AutocompleteItem>
-                        )}
-                      </Autocomplete>
+                      <Input placeholder="City e.g. Kabul..." {...field} />
                     )}
                   />
                 </div>
@@ -163,34 +114,26 @@ export default function Main() {
                   className="z-30 h-12 mx-1 dark:bg-gray-600"
                 />
                 <div className="flex-1">
-                  <Select
-                    label="Price Range"
-                    placeholder="e.g. 5K - 10K..."
-                    size="lg"
-                    radius="sm"
-                    color="primary"
-                    variant="faded"
-                    // value={[form.watch("min_price"), form.watch("max_price")]}
-                    onChange={(value) => {
-                      const [minPrice, maxPrice] = value.split(",");
-                      form.setValue("min_price", minPrice || "");
-                      form.setValue("max_price", maxPrice || "");
-                    }}
-                  >
-                    {[
-                      { label: "free - 1K", value: [0, 1000] },
-                      { label: "5K - 10K", value: [5000, 10000] },
-                      { label: "10K - 20K", value: [10000, 20000] },
-                      { label: "20K - 50K", value: [20000, 50000] },
-                      { label: "50K - 100K", value: [50000, 100000] },
-                      { label: "100K - 1M", value: [100000, 1000000] },
-                    ].map((item) => (
-                      <SelectItem key={item.value} textValue={item.value}>
-                        <div className="flex gap-2 items-center">
-                          <div className="flex flex-col">{item.label}</div>
-                        </div>
-                      </SelectItem>
-                    ))}
+                  <Select onValueChange={(value) => {
+                    const [minPrice, maxPrice] = value.split(",");
+                    form.setValue("min_price", minPrice || "");
+                    form.setValue("max_price", maxPrice || "");
+                  }}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Price Range e.g. 5K - 10K" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {[
+                        { label: "free - 1K", value: "0,1000" },
+                        { label: "5K - 10K", value: "5000,10000" },
+                        { label: "10K - 20K", value: "10000,20000" },
+                        { label: "20K - 50K", value: "20000,50000" },
+                        { label: "50K - 100K", value: "50000,100000" },
+                        { label: "100K - 1M", value: "100000,1000000" },
+                      ].map((item) => (
+                        <SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>
+                      ))}
+                    </SelectContent>
                   </Select>
                 </div>
                 <Separator
@@ -199,9 +142,7 @@ export default function Main() {
                 />
                 <div className="content-center">
                   <Button
-                    // type="submit"
                     className="py-6"
-                    color="primary"
                     onClick={() => {
                       const formValues = form.getValues();
                       const truthyValues = Object.fromEntries(

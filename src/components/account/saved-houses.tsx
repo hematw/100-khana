@@ -1,9 +1,9 @@
 import PropertyCard from "../house-card";
-import { IPropertyForm } from "../property-form";
+import { PropertyForm } from "../property-form";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
-type PropertyWithID = IPropertyForm & Record<"_id", string>;
+type PropertyWithID = PropertyForm & Record<"_id", string>;
 
 function SavedHouses() {
 const [houses, setHouses] = useState<PropertyWithID[]>(()=> {

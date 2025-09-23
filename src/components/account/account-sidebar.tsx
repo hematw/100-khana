@@ -1,7 +1,7 @@
 import { useAuth } from "@/contexts/auth-context";
-import { Avatar } from "@heroui/avatar";
-import { Button } from "@heroui/button";
-import { Card } from "@heroui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/src/components/ui/avatar";
+import { Button } from "@/src/components/ui/button";
+import { Card } from "@/src/components/ui/card";
 import { Bookmark, LogOut, UserPen, CirclePlus, House } from "lucide-react";
 import { NavLink } from "react-router-dom";
 

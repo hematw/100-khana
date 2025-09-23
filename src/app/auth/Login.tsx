@@ -1,13 +1,13 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Button } from "@heroui/button";
-import { Input } from "@heroui/input";
-import { Card, CardBody, CardFooter, CardHeader } from "@heroui/card";
+import { Button } from "@/src/components/ui/button";
+import { Input } from "@/src/components/ui/input";
+import { Card } from "@/src/components/ui/card";
 import { useAuth } from "@/contexts/auth-context";
 import PassInput from "@/components/pass-input";
 import { useEffect } from "react";
 
-interface ILoginForm {
+interface LoginForm {
   email: string;
   password: string;
 }
@@ -18,7 +18,7 @@ const Login = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<ILoginForm>();
+  } = useForm<LoginForm>();
 
   const { login, isLoggedIn } = useAuth();
   const location = useLocation();
@@ -32,7 +32,7 @@ const Login = () => {
 
   if (isLoggedIn) return null;
 
-  const onSubmit: SubmitHandler<ILoginForm> = async (values) => {
+  const onSubmit: SubmitHandler<LoginForm> = async (values) => {
     console.log(values);
     await login(values);
   };
@@ -40,19 +40,14 @@ const Login = () => {
   return (
     <section className="h-screen flex justify-center items-center">
       <Card className="w-[420px] p-6">
-        <CardHeader className="text-center text-2xl font-bold">
+        <div className="text-center text-2xl font-bold">
           Login to <span className="text-gradient">100 Khana</span>
-        </CardHeader>
+        </div>
 
         <form onSubmit={handleSubmit(onSubmit)}>
-          <CardBody className="space-y-8">
+          <div className="space-y-8">
             <Input
-              isRequired
-              variant="faded"
-              label="Email"
               placeholder="ahmad@example.com"
-              isInvalid={!!errors.email}
-              errorMessage={errors.email?.message}
               {...register("email", {
                 required: "Email is required!",
                 pattern: {
@@ -63,26 +58,21 @@ const Login = () => {
             />
 
             <PassInput
-              isRequired
-              variant="faded"
-              label="Password"
               placeholder="Enter your password"
-              isInvalid={!!errors.password}
-              errorMessage={errors.password?.message}
               {...register("password", {
                 required: "Password is required!",
               })}
             />
-          </CardBody>
+          </div>
 
-          <CardFooter className="w-full flex flex-col items-stretch space-y-4">
-            <Button color="primary" type="submit">
+          <div className="w-full flex flex-col items-stretch space-y-4">
+            <Button type="submit">
               Login
             </Button>
-            <Button variant="bordered" onPress={() => navigate("/register")}>
+            <Button variant="outline" onClick={() => navigate("/register")}>
               Register
             </Button>
-          </CardFooter>
+          </div>
         </form>
       </Card>
     </section>

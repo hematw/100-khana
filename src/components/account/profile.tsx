@@ -1,17 +1,18 @@
-import { Avatar } from "@heroui/avatar";
-import { Button } from "@heroui/button";
-import { Card } from "@heroui/card";
-import { Input, Textarea } from "@heroui/input";
-import { addToast } from "@heroui/toast";
-import { Form } from "@heroui/form";
-import { Skeleton } from "@heroui/skeleton";
+import { Avatar, AvatarFallback, AvatarImage } from "@/src/components/ui/avatar";
+import { Button } from "@/src/components/ui/button";
+import { Card } from "@/src/components/ui/card";
+import { Input } from "@/src/components/ui/input";
+import { Textarea } from "@/src/components/ui/textarea";
+import { toast } from "sonner";
+import { Form } from "@/src/components/ui/form";
+import { Skeleton } from "@/src/components/ui/skeleton";
 import { AtSign, Camera, CircleUser, Lock, Phone, User } from "lucide-react";
 import { Ref, useEffect, useRef, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import axiosIns from "@/axios";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/auth-context";
-import { IProfile } from "@/types";
+import { Profile } from "@/types";
 
 
 
@@ -62,7 +63,7 @@ function Profile() {
     reset,
     watch,
     formState: { errors },
-  } = useForm<IProfile>({
+  } = useForm<Profile>({
     defaultValues: profileData,
   });
 
@@ -76,7 +77,7 @@ function Profile() {
     }
   };
 
-  const onSubmit: SubmitHandler<IProfile> = async (values) => {
+  const onSubmit: SubmitHandler<Profile> = async (values) => {
     const formData = new FormData();
     formData.append("firstName", values.firstName || "");
     formData.append("lastName", values.lastName || "");

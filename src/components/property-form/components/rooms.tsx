@@ -1,8 +1,8 @@
-import { Input } from "@heroui/input";
-import { IPropertyForm } from "..";
+import { Input } from "@/src/components/ui/input";
+import { PropertyForm } from "..";
 import { Controller, UseFormReturn } from "react-hook-form";
 
-function Rooms({ form }: { form: UseFormReturn<IPropertyForm> }) {
+function Rooms({ form }: { form: UseFormReturn<PropertyForm> }) {
   return (
     <>
       <Controller

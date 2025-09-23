@@ -1,10 +1,10 @@
 import axiosIns from "@/axios";
 import { useQuery } from "@tanstack/react-query";
 import PropertyCard from "../house-card";
-import { IPropertyForm } from "../property-form";
+import { PropertyForm } from "../property-form";
 import { Link } from "react-router-dom";
 
-type PropertyWithID = IPropertyForm & Record<"_id", string>;
+type PropertyWithID = PropertyForm & Record<"_id", string>;
 
 function MyHouses() {
   const {

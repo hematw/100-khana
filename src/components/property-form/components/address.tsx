@@ -1,13 +1,13 @@
-import { Input } from "@heroui/input";
-import { IPropertyForm } from "..";
+import { Input } from "@/src/components/ui/input";
+import { PropertyForm } from "..";
 import { Controller, UseFormReturn } from "react-hook-form";
 import axiosIns from "@/axios";
 import { useQuery } from "@tanstack/react-query";
-import { Autocomplete, AutocompleteItem } from "@heroui/autocomplete";
-import { Button } from "@heroui/button";
+import { Button } from "@/src/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/src/components/ui/select";
 // import { MapPin } from "lucide-react";
 import { useState } from "react";
-import { addToast } from "@heroui/toast";
+import { toast } from "sonner";
 // import { Combobox } from "@/components/ui/combo-box";
 
 type TDistrict = {
@@ -30,7 +30,7 @@ async function getDistricts(cityId: string): Promise<TDistrict[]> {
   return response.data.districts;
 }
 
-function Address({ form }: { form: UseFormReturn<IPropertyForm> }) {
+function Address({ form }: { form: UseFormReturn<PropertyForm> }) {
   const selectedCity = form.getValues("city");
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -66,11 +66,7 @@ function Address({ form }: { form: UseFormReturn<IPropertyForm> }) {
         });
       } catch (error) {
         console.error(error);
-        addToast({
-          color: "primary",
-          title: "Something went wrong!",
-          description: "Couldn't get location info.",
-        });
+        toast.error("Couldn't get location info.");
       } finally {
         setIsLoading(false);
       }
@@ -91,85 +87,50 @@ function Address({ form }: { form: UseFormReturn<IPropertyForm> }) {
         control={form.control}
         name="city"
         render={({ field }) => (
-          <Autocomplete
-            label="City"
-            items={cities}
-            {...field}
-            placeholder="e.g. Kabul..."
-            isInvalid={!!form.formState.errors.city}
-            errorMessage={form.formState.errors.city?.message}
-            defaultSelectedKey={field.value}
-            onSelectionChange={(selectedCity) =>
-              form.setValue("city", selectedCity?.toString() || "")
-            }
-          >
-            {(item) => (
-              <AutocompleteItem key={item._id}>{item.name}</AutocompleteItem>
-            )}
-          </Autocomplete>
+          <Select value={field.value} onValueChange={(v) => form.setValue("city", v)}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select a city" />
+            </SelectTrigger>
+            <SelectContent>
+              {cities.map((c) => (
+                <SelectItem key={c._id} value={c._id}>{c.name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         )}
       />
       <Controller
         control={form.control}
         name="district"
         render={({ field }) => (
-          <Autocomplete
-            label="District"
-            items={districts}
-            {...field}
-            placeholder="e.g. 12th district..."
-            isInvalid={!!form.formState.errors.district}
-            errorMessage={form.formState.errors.district?.message}
-            defaultSelectedKey={field.value}
-            onSelectionChange={(selectedCity) =>
-              form.setValue("district", selectedCity?.toString() || "")
-            }
-          >
-            {(item) => (
-              <AutocompleteItem key={item._id} textValue={item.name}>
-                {item.name}
-              </AutocompleteItem>
-            )}
-          </Autocomplete>
+          <Select value={field.value} onValueChange={(v) => form.setValue("district", v)}>
+            <SelectTrigger>
+              <SelectValue placeholder="Select a district" />
+            </SelectTrigger>
+            <SelectContent>
+              {districts.map((d) => (
+                <SelectItem key={d._id} value={d._id}>{d.name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         )}
       />
       <Controller
         control={form.control}
         name="road"
         render={({ field }) => (
-          <Input
-            label="Main Road"
-            placeholder="e.g. Shahr e Naw - Qala Fathullah"
-            isInvalid={!!form.formState.errors.road}
-            errorMessage={form.formState.errors.road?.message}
-            {...field}
-          />
+          <Input placeholder="Main Road e.g. Shahr e Naw - Qala Fathullah" {...field} />
         )}
       />
       <Controller
         control={form.control}
         name="street" // ✅ Fixed duplicate field name
         render={({ field }) => (
-          <Input
-            label="Street"
-            placeholder="e.g. 4th street"
-            isInvalid={!!form.formState.errors.street}
-            errorMessage={form.formState.errors.street?.message}
-            {...field}
-          />
+          <Input placeholder="Street e.g. 4th street" {...field} />
         )}
       />
       <div className="col-span-2 flex flex-col">
-        <Button
-          onPress={getGeolocation}
-          // startContent={<MapPin />}
-          size="lg"
-          color="primary"
-          variant="solid"
-          isLoading={isLoading}
-        >
-          Get current Location
-        </Button>
+        <Button onClick={getGeolocation} disabled={isLoading}>Get current Location</Button>
         <span className="text-xs text-primary-400 mt-2">
           {!!form.formState.errors.lat?.message && "Give us your location info"}
         </span>

@@ -1,4 +1,4 @@
-import { Button } from "@heroui/button";
+import { Button } from "@/src/components/ui/button";
 import "./style.css";
 import { Moon, Sun } from "lucide-react";
 

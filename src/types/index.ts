@@ -10,9 +10,9 @@ export interface ISearchForm {
   max_price: string;
 }
 
-export type TListingType = { label: string; value: string };
+export type ListingType = { label: string; value: string };
 
-export interface IPropertyForm {
+export interface PropertyForm {
   numOfLivingRooms: string;
   numOfBedRooms: string;
   numOfKitchens: string;
@@ -21,9 +21,9 @@ export interface IPropertyForm {
   price: string;
   area: string;
   category: string[];
-  facilities: string[];
+  facilities: string[] | Facility[];
   listingType: string[];
-  city: string;
+  city: string | {name: string};
   district: string;
   road: string;
   street: string;
@@ -32,6 +32,8 @@ export interface IPropertyForm {
   floor: string;
   totalFloors: string;
   description: string[];
+  views: number;
+  saved: number;
 }
 
 export interface HomeCardProps {
@@ -51,7 +53,7 @@ export interface PropertyCardProps {
   className?: string;
 }
 
-export interface IProfile {
+export interface Profile {
   firstName?: string;
   lastName?: string;
   email?: string;
@@ -64,7 +66,7 @@ export interface IProfile {
   username?: string;
 }
 
-export interface IUser {
+export interface User {
   _id: string;
   username: string;
   firstName: string;
@@ -78,12 +80,12 @@ export interface IUser {
   bio: string;
 }
 
-export interface ILoginForm {
+export interface LoginForm {
   email: string;
   password: string;
 }
 
-export interface IRegisterForm {
+export interface RegisterForm {
   username: string;
   email: string;
   firstName: string;
@@ -97,7 +99,7 @@ export type ServerError = {
   duplicateField: string;
 };
 
-export interface IProfile {
+export interface Profile {
   firstName?: string;
   lastName?: string;
   email?: string;
@@ -110,7 +112,7 @@ export interface IProfile {
   username?: string;
 }
 
-export type TFacility = {
+export type Facility = {
   _id: string;
   name: string;
   description: string;

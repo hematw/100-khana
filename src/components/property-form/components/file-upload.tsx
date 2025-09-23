@@ -1,9 +1,9 @@
 import { ImagePlus, Trash2 } from "lucide-react";
 import { ChangeEventHandler, useEffect, useState } from "react";
 import { UseFormReturn } from "react-hook-form";
-import { IPropertyForm } from "..";
-import { Button } from "@heroui/button";
-import { Card } from "@heroui/card";
+import { PropertyForm } from "..";
+import { Button } from "@/src/components/ui/button";
+import { Card } from "@/src/components/ui/card";
 
 type FilePreview = {
   name: string;
@@ -11,7 +11,7 @@ type FilePreview = {
   url: string;
 };
 
-function FileUpload({ form }: { form: UseFormReturn<IPropertyForm> }) {
+function FileUpload({ form }: { form: UseFormReturn<PropertyForm> }) {
   const [previews, setPreviews] = useState<FilePreview[]>([]);
 
   useEffect(() => {

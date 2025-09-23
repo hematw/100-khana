@@ -2,13 +2,13 @@ import { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import Facilities from "./components/facilities";
 import { z } from "zod";
-import { Form } from "@heroui/form";
+import { Form } from "@/src/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Rooms from "./components/rooms";
 import FileUploadForm from "./components/file-upload";
 import AreaAndPrice from "./components/type-and-price";
-import { Card, CardHeader } from "@heroui/card";
-import { Button } from "@heroui/button";
+import { Card, CardHeader } from "@/src/components/ui/card";
+import { Button } from "@/src/components/ui/button";
 import Address from "./components/address";
 import OtherDescription from "./components/other-details";
 import axiosIns from "@/axios";
@@ -22,8 +22,8 @@ import {
   ScrollText,
   WavesLadder,
 } from "lucide-react";
-import { addToast } from "@heroui/toast";
-import { IPropertyForm } from "@/types";
+import { toast } from "sonner";
+import { PropertyForm } from "@/types";
 import { useAuth } from "@/contexts/auth-context";
 import { useLocation, useNavigate } from "react-router-dom";
 
@@ -119,7 +119,7 @@ function AddHome() {
   if (!isLoggedIn) return null;
 
   const TOTAL_STEPS = 6;
-  const form = useForm<IPropertyForm>({
+  const form = useForm<PropertyForm>({
     resolver: zodResolver(FormSchema),
     mode: "all",
     defaultValues: {
@@ -146,8 +146,8 @@ function AddHome() {
   });
 
 
-  const onSubmit: SubmitHandler<IPropertyForm> = async (
-    data: IPropertyForm
+  const onSubmit: SubmitHandler<PropertyForm> = async (
+    data: PropertyForm
   ) => {
     console.log(data);
     try {
@@ -181,12 +181,7 @@ function AddHome() {
       // form.reset();
     } catch (error) {
       console.error("Error submitting form:", error);
-      addToast({
-        color: "primary",
-        title: "Form is not valid!",
-        timeout: 3000,
-        description: "Please fill all the required fields",
-      });
+      toast.error("Form is not valid! Please fill all the required fields", { duration: 3000 });
     }
   };
 
@@ -262,10 +257,8 @@ function AddHome() {
                   ))}
                 </div>
               </div>
-              <Form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="w-full items-stretch"
-              >
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(onSubmit)} className="w-full items-stretch">
                 {/* <form onSubmit={form.handleSubmit(onSubmit)}> */}
                 <div
                   className="grid grid-cols-2 gap-x-4 gap-y-8 justify-between"
@@ -290,8 +283,8 @@ function AddHome() {
                   <Button
                     size="lg"
                     type="button"
-                    onPress={prevStep}
-                    variant={"bordered"}
+                    onClick={prevStep}
+                    variant={"outline"}
                   >
                     Back
                   </Button>
@@ -300,19 +293,20 @@ function AddHome() {
                     <Button
                       size="lg"
                       type="button"
-                      onPress={() => {
+                      onClick={() => {
                         nextStep();
                       }}
                     >
                       Next
                     </Button>
                   ) : (
-                    <Button size="lg" type="submit" color="primary">
+                    <Button size="lg" type="submit">
                       Submit
                     </Button>
                   )}
                 </div>
                 {/* </form> */}
+              </form>
               </Form>
             </>
           )}

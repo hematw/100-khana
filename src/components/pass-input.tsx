@@ -1,5 +1,5 @@
-import { Button } from "@heroui/button";
-import { Input } from "@heroui/input";
+import { Button } from "@/src/components/ui/button";
+import { Input } from "@/src/components/ui/input";
 import { EyeIcon, EyeOffIcon } from "lucide-react";
 
 import { memo, useState } from "react";
@@ -8,23 +8,24 @@ function PassInput(props: any) {
   const [isVisible, setIsVisible] = useState(false);
 
   return (
-    <Input
-      {...props}
-      type={isVisible ? "text" : "password"}
-      endContent={
-        <Button
-          isIconOnly
-          variant="light"
-          onPress={() => setIsVisible(!isVisible)}
-        >
-          {isVisible ? (
-            <EyeOffIcon className="w-6 h-6 cursor-pointer" />
-          ) : (
-            <EyeIcon className="w-6 h-6 cursor-pointer" />
-          )}
-        </Button>
-      }
-    />
+    <div className="relative w-full">
+      <Input
+        {...props}
+        type={isVisible ? "text" : "password"}
+        className="pr-10"
+      />
+      <button
+        type="button"
+        onClick={() => setIsVisible(!isVisible)}
+        className="absolute inset-y-0 right-2 flex items-center"
+      >
+        {isVisible ? (
+          <EyeOffIcon className="w-5 h-5" />
+        ) : (
+          <EyeIcon className="w-5 h-5" />
+        )}
+      </button>
+    </div>
   );
 }
 

@@ -1,7 +1,7 @@
-import { Card } from "@heroui/card";
+import { Card } from "@/src/components/ui/card";
 import Carousel from "./Carousel";
-import { Chip } from "@heroui/chip";
-import { Button } from "@heroui/button";
+import { Badge } from "@/src/components/ui/badge";
+import { Button } from "@/src/components/ui/button";
 import { PropertyCardProps } from "@/types";
 
 const PropertyCard: React.FC<PropertyCardProps> = ({
@@ -21,7 +21,7 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
         <Carousel images={images} />
         <div className="">
           <div className="top-2 left-0 absolute flex justify-between px-2 w-full">
-            <Chip
+            <Badge
               className={`shadow-lg px-2 py-1 rounded-3xl font-semibold text-xs ${
                 listingType.toLowerCase().includes("sale")
                   ? "bg-yellow-400"
@@ -31,13 +31,8 @@ const PropertyCard: React.FC<PropertyCardProps> = ({
               }`}
             >
               {listingType}
-            </Chip>
-            <Button
-              isIconOnly
-              radius="full"
-              variant="light"
-              onPress={onAddWishlist}
-            >
+            </Badge>
+            <Button size="icon" variant="ghost" onClick={onAddWishlist}>
               <img src="/icons/heart.svg" alt="" />
             </Button>
           </div>

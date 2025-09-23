@@ -1,15 +1,14 @@
-import { Input } from "@heroui/input";
-import { IPropertyForm } from "..";
+import { Input } from "@/src/components/ui/input";
+import { PropertyForm } from "..";
 import { Controller, UseFormReturn } from "react-hook-form";
-import { Select, SelectedItems, SelectItem } from "@heroui/select";
-import { Chip } from "@heroui/chip";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/src/components/ui/select";
 import { useQuery } from "@tanstack/react-query";
 import { getCategories } from "@/api";
-import { TListingType } from "@/types";
+import { ListingType, TCategory } from "@/types";
 
 
 
-const listingTypes: TListingType[] = [
+const listingTypes: ListingType[] = [
   { label: "Rental", value: "rental" },
   { label: "Sale", value: "sale" },
   { label: "Mortgage", value: "mortgage" },
@@ -17,7 +16,7 @@ const listingTypes: TListingType[] = [
 
 
 
-function AreaAndPrice({ form }: { form: UseFormReturn<IPropertyForm> }) {
+function AreaAndPrice({ form }: { form: UseFormReturn<PropertyForm> }) {
   const {
     data: categories,
     error,
@@ -42,37 +41,15 @@ function AreaAndPrice({ form }: { form: UseFormReturn<IPropertyForm> }) {
         control={form.control}
         name="listingType"
         render={({ field }) => (
-          <Select
-            label="Listing Type"
-            // isMultiline={true}
-            items={listingTypes}
-            placeholder="e.g. Rental"
-            selectionMode="multiple"
-            variant="flat"
-            isInvalid={!!form.formState.errors.listingType}
-            errorMessage={form.formState.errors.listingType?.message}
-            defaultSelectedKeys={field.value}
-            onSelectionChange={(keys) => {
-              const selectedValues = Array.from(keys).map((key) => String(key));
-              form.setValue("listingType", selectedValues);
-            }}
-            renderValue={(items: SelectedItems<TListingType>) => {
-              return (
-                <div className="flex flex-wrap gap-2">
-                  {items.map((item) => (
-                    <Chip key={item.key}>{item.data?.value}</Chip>
-                  ))}
-                </div>
-              );
-            }}
-          >
-            {(item) => (
-              <SelectItem key={item.value} textValue={item.value}>
-                <div className="flex gap-2 items-center">
-                  <div className="flex flex-col">{item.value}</div>
-                </div>
-              </SelectItem>
-            )}
+          <Select value={field.value[0]} onValueChange={(v) => form.setValue("listingType", [v])}>
+            <SelectTrigger>
+              <SelectValue placeholder="Listing Type e.g. Rental" />
+            </SelectTrigger>
+            <SelectContent>
+              {listingTypes.map((lt) => (
+                <SelectItem key={lt.value} value={lt.value}>{lt.label}</SelectItem>
+              ))}
+            </SelectContent>
           </Select>
         )}
       />
@@ -80,38 +57,15 @@ function AreaAndPrice({ form }: { form: UseFormReturn<IPropertyForm> }) {
         control={form.control}
         name="category"
         render={({ field }) => (
-          <Select
-            label="Property type"
-            // isMultiline={true}
-            items={categories}
-            // {...field}
-            defaultSelectedKeys={field.value}
-            placeholder="e.g. Apartment"
-            isInvalid={!!form.formState.errors.category}
-            errorMessage={form.formState.errors.category?.message}
-            onSelectionChange={(keys) => {
-              const selectedValues = Array.from(keys).map((key) => String(key));
-              form.setValue("category", selectedValues);
-            }}
-            renderValue={(items: SelectedItems<TCategory>) => {
-              return (
-                <div className="flex flex-wrap gap-2">
-                  {items.map((item) => (
-                    <Chip key={item.key}>{item.data?.name}</Chip>
-                  ))}
-                </div>
-              );
-            }}
-            selectionMode="multiple"
-            variant="flat"
-          >
-            {(item) => (
-              <SelectItem key={item._id} textValue={item.name}>
-                <div className="flex gap-2 items-center">
-                  <div className="flex flex-col">{item.name}</div>
-                </div>
-              </SelectItem>
-            )}
+          <Select value={field.value[0]} onValueChange={(v) => form.setValue("category", [v])}>
+            <SelectTrigger>
+              <SelectValue placeholder="Property type e.g. Apartment" />
+            </SelectTrigger>
+            <SelectContent>
+              {categories?.map((c: TCategory) => (
+                <SelectItem key={c._id} value={c._id}>{c.name}</SelectItem>
+              ))}
+            </SelectContent>
           </Select>
         )}
       />
@@ -119,30 +73,14 @@ function AreaAndPrice({ form }: { form: UseFormReturn<IPropertyForm> }) {
         control={form.control}
         name="area"
         render={({ field }) => (
-          <Input
-            type="number"
-            label="Area (m2)"
-            placeholder="e.g. 320"
-            isInvalid={!!form.formState.errors.area}
-            errorMessage={form.formState.errors.area?.message}
-            {...field}
-            value={field.value.toString()}
-          />
+          <Input type="number" placeholder="Area (m2) e.g. 320" {...field} value={field.value.toString()} />
         )}
       />
       <Controller
         control={form.control}
         name="price"
         render={({ field }) => (
-          <Input
-            type="number"
-            label="Price (AFN)"
-            placeholder="e.g. 1000"
-            isInvalid={!!form.formState.errors.price}
-            errorMessage={form.formState.errors.price?.message}
-            {...field}
-            value={field.value.toString()}
-          />
+          <Input type="number" placeholder="Price (AFN) e.g. 1000" {...field} value={field.value.toString()} />
         )}
       />
     </>

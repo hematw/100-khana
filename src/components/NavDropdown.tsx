@@ -6,8 +6,8 @@ import {
   DropdownMenu,
   DropdownSection,
   DropdownTrigger,
-} from "@heroui/dropdown";
-import { Button } from "@heroui/button";
+} from "@/src/components/ui/dropdown-menu";
+import { Button } from "@/src/components/ui/button";
 
 export default function NavDropdown() {
   return (

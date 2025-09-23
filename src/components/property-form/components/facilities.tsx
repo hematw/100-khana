@@ -1,19 +1,19 @@
 import { Controller, UseFormReturn } from "react-hook-form";
 import axiosIns from "@/axios";
-import { Select, SelectedItems, SelectItem } from "@heroui/select";
-import { Chip } from "@heroui/chip";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/src/components/ui/select";
+import { Badge } from "@/src/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
 import icons from "@/lib/icons";
-import { IPropertyForm, TFacility } from "@/types";
+import { PropertyForm, Facility } from "@/types";
 
 
 
-async function getFacilities(): Promise<TFacility[]> {
+async function getFacilities(): Promise<Facility[]> {
   const { data } = await axiosIns.get("/facilities");
   return data.facilities;
 }
 
-function Facilities({ form }: { form: UseFormReturn<IPropertyForm> }) {
+function Facilities({ form }: { form: UseFormReturn<PropertyForm> }) {
   const {
     data: facilities,
     error,
@@ -38,50 +38,31 @@ function Facilities({ form }: { form: UseFormReturn<IPropertyForm> }) {
         control={form.control}
         name="facilities"
         render={({ field }) => (
-          <Select
-            label="Facilities"
-            className="min-w-full"
-            isMultiline={true}
-            items={facilities}
-            value={field.value}
-            placeholder="e.g. Secure doors"
-            defaultSelectedKeys={field.value}
-            selectionMode="multiple"
-            variant="flat"
-            size="sm"
-            isInvalid={!!form.formState.errors.facilities}
-            errorMessage={form.formState.errors.facilities?.message}
-            onSelectionChange={(keys) => {
-              const selectedValues = Array.from(keys).map((key) => String(key));
-              form.setValue("facilities", selectedValues); // Update form state with array of strings
-            }}
-            renderValue={(items: SelectedItems<TFacility>) => {
-              return (
-                <div className="flex flex-wrap gap-2">
-                  {items.map((item) => (
-                    <Chip
-                      key={item.key}
-                      color="primary"
-                      className="py-2 px-3 inline-flex h-fit"
-                      startContent={
-                        icons[item.data?.icon as keyof typeof icons]
-                      }
-                    >
-                      <span>{item.data?.name}</span>
-                    </Chip>
-                  ))}
-                </div>
-              );
-            }}
-          >
-            {(item) => (
-              <SelectItem key={item._id} textValue={item.name}>
-                <div className="flex gap-2 items-center">
-                  <div className="flex flex-col">{item.name}</div>
-                </div>
-              </SelectItem>
-            )}
-          </Select>
+          <div className="space-y-2">
+            <Select value={field.value?.[0]} onValueChange={(v) => form.setValue("facilities", Array.from(new Set([...(field.value || []), v])))}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select a facility" />
+              </SelectTrigger>
+              <SelectContent>
+                {facilities?.map((f) => (
+                  <SelectItem key={f._id} value={f._id}>{f.name}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <div className="flex flex-wrap gap-2">
+              {(field.value || []).map((id: string) => {
+                const f = facilities?.find((x) => x._id === id)
+                if (!f) return null
+                const Icon = icons[f.icon as keyof typeof icons]
+                return (
+                  <Badge key={id} variant="secondary" className="gap-1">
+                    {Icon}
+                    {f.name}
+                  </Badge>
+                )
+              })}
+            </div>
+          </div>
         )}
       />
     </div>

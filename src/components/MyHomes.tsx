@@ -3,7 +3,7 @@ import axiosInstance from "../axios";
 import HomeCard from "./HomeCard";
 import AddHome from "./property-form";
 import { HousePlus } from "lucide-react";
-import { Button } from "@heroui/button";
+import { Button } from "@/src/components/ui/button";
 
 const fakeData = {
   id: "fdasfasj",
@@ -36,11 +36,8 @@ const MyHomes = () => {
     <div className="m-auto max-w-5xl py-12">
       <div className="flex flex-col justify-center">
         <div className="m-auto">
-          <Button
-            variant="solid"
-            startContent={<HousePlus />}
-            onPress={() => setIsModalActive(true)}
-          >
+          <Button onClick={() => setIsModalActive(true)}>
+            <HousePlus className="mr-2 h-4 w-4" />
             Add new place
           </Button>
         </div>
