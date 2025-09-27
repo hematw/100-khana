@@ -1,4 +1,4 @@
-import { HomeCardProps } from "@/types";
+import { HomeCardProps } from "@/src/types";
 
 
 const HomeCard = ({

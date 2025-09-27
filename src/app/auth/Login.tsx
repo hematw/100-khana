@@ -1,11 +1,12 @@
+"use client"
+
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
 import { Card } from "@/src/components/ui/card";
-import { useAuth } from "@/contexts/auth-context";
-import PassInput from "@/components/pass-input";
+import PassInput from "@/src/components/pass-input";
 import { useEffect } from "react";
+import { useRouter } from "next/router";
 
 interface LoginForm {
   email: string;
@@ -13,22 +14,20 @@ interface LoginForm {
 }
 
 const Login = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<LoginForm>();
 
-  const { login, isLoggedIn } = useAuth();
-  const location = useLocation();
+  const { login, isLoggedIn } = {login: async (values: LoginForm) => {}, isLoggedIn: false};
 
   useEffect(() => {
     if (isLoggedIn) {
-      const previousPage = location.state?.from || "/";
-      navigate(previousPage, { replace: true });
+      router.back();
     }
-  }, [isLoggedIn, navigate, location]);
+  }, [isLoggedIn, router]);
 
   if (isLoggedIn) return null;
 
@@ -69,7 +68,7 @@ const Login = () => {
             <Button type="submit">
               Login
             </Button>
-            <Button variant="outline" onClick={() => navigate("/register")}>
+            <Button variant="outline" onClick={() => router.push("/register")}>
               Register
             </Button>
           </div>

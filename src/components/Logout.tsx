@@ -1,7 +1,7 @@
-import { Navigate, useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 
 export default function Logout() {
-  const navigate = useNavigate();
+  const router = useRouter();
   const logout = async () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -9,9 +9,10 @@ export default function Logout() {
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
-        navigate("/login");
+        router.push("/login");
       });
   };
   logout();
-  return <Navigate to={"/login"} />;
+  router.push("/login");
+  return null;
 }

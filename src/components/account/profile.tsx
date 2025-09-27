@@ -12,7 +12,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import axiosIns from "@/axios";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/contexts/auth-context";
-import { Profile } from "@/types";
+import { Profile } from "@/src/types";
 
 
 

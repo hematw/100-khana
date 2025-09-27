@@ -1,8 +1,8 @@
-import axiosIns from "@/axios";
+import axiosIns from "@/src/axios";
 import { useQuery } from "@tanstack/react-query";
 import PropertyCard from "../house-card";
-import { PropertyForm } from "../property-form";
-import { Link } from "react-router-dom";
+import { PropertyForm } from "@/src/types";
+import Link from "next/link";
 
 type PropertyWithID = PropertyForm & Record<"_id", string>;
 
@@ -57,7 +57,7 @@ function MyHouses() {
               <p className="text-gray-500">
                 You have not listed any houses yet.
               </p>
-              <Link to="/new-property" className="text-primary-400 underline hover:no-underline">
+              <Link href="/new-property" className="text-primary-400 underline hover:no-underline">
                 List now.
               </Link>
             </div>

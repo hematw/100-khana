@@ -1,6 +1,6 @@
+import { PropertyForm } from "@/src/types";
 import PropertyCard from "../house-card";
-import { PropertyForm } from "../property-form";
-import { Link } from "react-router-dom";
+import Link  from "next/link";
 import { useState } from "react";
 
 type PropertyWithID = PropertyForm & Record<"_id", string>;
@@ -36,7 +36,7 @@ const [houses, setHouses] = useState<PropertyWithID[]>(()=> {
             </div>
             <div>
               <h3 className="text-2xl font-semibold">You didn't save any houses</h3>
-              <Link to="/new-property" className="text-primary-400 underline hover:no-underline">
+              <Link href="/new-property" className="text-primary-400 underline hover:no-underline">
                 Find a place
               </Link>
             </div>

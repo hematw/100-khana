@@ -17,17 +17,25 @@ import {
   Drawer,
   DrawerContent,
   DrawerHeader,
-  DrawerBody,
   DrawerFooter,
 } from "@/src/components/ui/drawer";
 
+// import {
+//   Dropdown,
+//   DropdownItem,
+//   DropdownMenu,
+//   DropdownTrigger,
+// } from "@/src/components/ui/dropdown-menu";
 import {
-  Dropdown,
-  DropdownItem,
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/src/components/ui/avatar";
+import {
   DropdownMenu,
-  DropdownTrigger,
-} from "@/src/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/src/components/ui/avatar";
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 
 // Sample Data
 const data = {
@@ -104,54 +112,41 @@ export function AppSidebar() {
 
   return (
     <>
-      <Button onPress={() => setIsOpen(true)}>Open Sidebar</Button>
-      <Drawer
-        isOpen={isOpen}
-        onOpenChange={setIsOpen}
-        placement="left"
-        size="xs"
-        isDismissable
-      >
+      <Button onClick={() => setIsOpen(true)}>Open Sidebar</Button>
+      <Drawer open={isOpen} onOpenChange={setIsOpen}>
         <DrawerContent>
           {/* User Profile */}
           <DrawerHeader>
-            <Dropdown>
-              <DropdownTrigger>
-                <Avatar src={data.user.avatar} size="lg" />
-              </DropdownTrigger>
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <Avatar>
+                  <AvatarFallback>{data.user.name}</AvatarFallback>
+                  <AvatarImage src={data.user.avatar} />
+                </Avatar>
+              </DropdownMenuTrigger>
               <DropdownMenu aria-label="User Menu">
-                <DropdownItem key="profile">Profile</DropdownItem>
-                <DropdownItem key="logout">Logout</DropdownItem>
+                <DropdownMenuItem key="profile">Profile</DropdownMenuItem>
+                <DropdownMenuItem key="logout">Logout</DropdownMenuItem>
               </DropdownMenu>
-            </Dropdown>
+            </DropdownMenu>
           </DrawerHeader>
 
           {/* Navigation */}
-          <DrawerBody>
+          <DrawerContent>
             {data.navMain.map((item, index) => (
-              <Button
-                key={index}
-                startContent={<item.icon />}
-                variant="light"
-                fullWidth
-                className="justify-start"
-              >
+              <Button key={index} className="flex justify-start gap-2">
+                {<item.icon />}
                 {item.title}
               </Button>
             ))}
-          </DrawerBody>
+          </DrawerContent>
 
           {/* Projects */}
           <DrawerFooter>
             <h4 className="text-sm font-semibold">Projects</h4>
             {data.projects.map((project, index) => (
-              <Button
-                key={index}
-                startContent={<project.icon />}
-                variant="light"
-                fullWidth
-                className="justify-start"
-              >
+              <Button key={index} className="justify-start">
+                {<project.icon />}
                 {project.name}
               </Button>
             ))}

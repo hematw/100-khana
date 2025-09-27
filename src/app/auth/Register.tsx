@@ -1,15 +1,16 @@
+"use client"
+
 import { useEffect, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useLocation, useNavigate } from "react-router-dom";
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
 import { Card } from "@/src/components/ui/card";
-import PassInput from "@/components/pass-input";
-import { useAuth } from "@/contexts/auth-context";
-import { RegisterForm, ServerError } from "@/types";
+import PassInput from "@/src/components/pass-input";
+import { RegisterForm, ServerError } from "@/src/types";
+import { useRouter } from "next/navigation";
 
 const Register = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const [serverError, setServerError] = useState<ServerError>({
     message: "",
     duplicateField: "",
@@ -21,15 +22,13 @@ const Register = () => {
     formState: { errors },
   } = useForm<RegisterForm>();
 
-  const { isLoggedIn, signUp } = useAuth();
-  const location = useLocation();
+  const { isLoggedIn, signUp } = {isLoggedIn: false, signUp: async (values: RegisterForm) => {}};
 
   useEffect(() => {
     if (isLoggedIn) {
-      const previousPage = location.state?.from || "/";
-      navigate(previousPage, { replace: true });
+      router.back();
     }
-  }, [isLoggedIn, navigate, location]);
+  }, [isLoggedIn]);
 
   if (isLoggedIn) return null;
 
@@ -86,7 +85,7 @@ const Register = () => {
             </Button>
             <Button
               variant="outline"
-              onClick={() => navigate("/login")}
+              onClick={() => router.push("/login")}
             >
               Login
             </Button>

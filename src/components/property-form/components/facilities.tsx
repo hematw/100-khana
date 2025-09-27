@@ -4,7 +4,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/src/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
 import icons from "@/lib/icons";
-import { PropertyForm, Facility } from "@/types";
+import { PropertyForm, Facility } from "@/src/types";
 
 
 

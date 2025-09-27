@@ -1,3 +1,5 @@
+"use client"
+
 import { PropertyForm, ISearchForm, TCategory } from "@/src/types";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";

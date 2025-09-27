@@ -11,7 +11,7 @@ import { Card, CardHeader } from "@/src/components/ui/card";
 import { Button } from "@/src/components/ui/button";
 import Address from "./components/address";
 import OtherDescription from "./components/other-details";
-import axiosIns from "@/axios";
+import axiosIns from "@/src/axios";
 import Confetti from "react-confetti";
 import {
   Building,
@@ -23,9 +23,8 @@ import {
   WavesLadder,
 } from "lucide-react";
 import { toast } from "sonner";
-import { PropertyForm } from "@/types";
-import { useAuth } from "@/contexts/auth-context";
-import { useLocation, useNavigate } from "react-router-dom";
+import { PropertyForm } from "@/src/types";
+import { useRouter } from "next/navigation";
 
 const FormSchema = z.object({
   category: z
@@ -57,12 +56,12 @@ const FormSchema = z.object({
   description: z.array(z.string()),
 });
 const icons = [
-  <MapPinHouse size={16} />,
-  <Gem size={16} />,
-  <Building size={16} />,
-  <WavesLadder size={16} />,
-  <ScrollText size={16} />,
-  <Images size={16} />,
+  <MapPinHouse size={16} key="map-pin-house" />,
+  <Gem size={16} key="gem" />,
+  <Building size={16} key="building" />,
+  <WavesLadder size={16} key="waves-ladder" />,
+  <ScrollText size={16} key="scroll-text" />,
+  <Images size={16} key="images" />,
 ];
 
 const validationsForEachStep: (
@@ -105,18 +104,17 @@ function AddHome() {
   const [step, setStep] = useState(1);
   const [showConfetti, setShowConfetti] = useState(false);
 
-  const navigate = useNavigate();
-  const { isLoggedIn } = useAuth();
-  const location = useLocation();
+  const router = useRouter();
+  const  isLoggedIn  = false;
 
   useEffect(() => {
     if (!isLoggedIn) {
       // const previousPage = location.state?.from || "/";
-      navigate("/login");
+      router.push("/login");
     }
-  }, [isLoggedIn, navigate, location]);
+  }, [isLoggedIn, router]);
 
-  if (!isLoggedIn) return null;
+
 
   const TOTAL_STEPS = 6;
   const form = useForm<PropertyForm>({
@@ -144,7 +142,7 @@ function AddHome() {
       description: [],
     },
   });
-
+  if (!isLoggedIn) return null;
 
   const onSubmit: SubmitHandler<PropertyForm> = async (
     data: PropertyForm
@@ -234,10 +232,9 @@ function AddHome() {
                   </div>
                   {Array.from({ length: TOTAL_STEPS }).map((_, index) => (
                     <Button
-                      isIconOnly
-                      size="sm"
+                      size="icon"
                       key={index}
-                      onPress={async () => {
+                      onClick={async () => {
                         const isValid = await form.trigger(
                           validationsForEachStep[step - 1]
                         );

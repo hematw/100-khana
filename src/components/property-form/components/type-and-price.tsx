@@ -4,7 +4,7 @@ import { Controller, UseFormReturn } from "react-hook-form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/src/components/ui/select";
 import { useQuery } from "@tanstack/react-query";
 import { getCategories } from "@/api";
-import { ListingType, TCategory } from "@/types";
+import { ListingType, TCategory } from "@/src/types";
 
 
 

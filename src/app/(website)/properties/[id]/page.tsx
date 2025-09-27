@@ -1,3 +1,5 @@
+"use client"
+
 import axiosIns from "@/src/axios";
 import { Avatar, AvatarImage, AvatarFallback } from "@/src/components/ui/avatar";
 import { Button } from "@/src/components/ui/button";

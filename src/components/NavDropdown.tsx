@@ -1,41 +1,41 @@
 import { Menu } from "lucide-react";
-import { Link } from "react-router-dom";
+import Link  from "next/link";
 import {
-  Dropdown,
-  DropdownItem,
   DropdownMenu,
-  DropdownSection,
-  DropdownTrigger,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
 } from "@/src/components/ui/dropdown-menu";
 import { Button } from "@/src/components/ui/button";
+import { DropdownMenuContent } from "@radix-ui/react-dropdown-menu";
 
 export default function NavDropdown() {
   return (
-    <Dropdown>
-      <DropdownTrigger asChild>
-        <Button isIconOnly  variant="light" aria-label="User menu">
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button size="icon" aria-label="User menu">
           <Menu />
         </Button>
-      </DropdownTrigger>
-      <DropdownMenu aria-label="Nav dropdown">
-        <DropdownSection showDivider title="My Account">
-          <DropdownItem key="profile">
-            <Link to="./dashboard/profile">Profile</Link>
-          </DropdownItem>
-          <DropdownItem key="add-property">
-            <Link to="./properties">Add Property</Link>
-          </DropdownItem>
-          <DropdownItem key="my-properties">
-            <Link to="./dashboard/homes">My Properties</Link>
-          </DropdownItem>
-        </DropdownSection>
-        <DropdownSection showDivider>
-          <DropdownItem key="team">Team</DropdownItem>
-        </DropdownSection>
-        <DropdownItem key="support">Support</DropdownItem>
-        <DropdownItem key="api">API</DropdownItem>
-        <DropdownItem key="logout">Log out</DropdownItem>
-      </DropdownMenu>
-    </Dropdown>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent aria-label="Nav dropdown">
+        <DropdownMenuGroup title="My Account">
+          <DropdownMenuItem key="profile">
+            <Link href="./dashboard/profile">Profile</Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem key="add-property">
+            <Link href="./properties">Add Property</Link>
+          </DropdownMenuItem>
+          <DropdownMenuItem key="my-properties">
+            <Link href="./dashboard/homes">My Properties</Link>
+          </DropdownMenuItem>
+        </DropdownMenuGroup>
+        <DropdownMenuGroup>
+          <DropdownMenuItem key="team">Team</DropdownMenuItem>
+        </DropdownMenuGroup>
+        <DropdownMenuItem key="support">Support</DropdownMenuItem>
+        <DropdownMenuItem key="api">API</DropdownMenuItem>
+        <DropdownMenuItem key="logout">Log out</DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }

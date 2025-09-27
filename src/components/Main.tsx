@@ -1,5 +1,6 @@
+"use client"
+
 import { ArrowUpRight } from "lucide-react";
-import { Controller, useForm } from "react-hook-form";
 // import { Input } from "@heroui/input";
 import ShadowedCard from "./cards/ShadowedCard";
 import {
@@ -17,6 +18,8 @@ import { getCities } from "@/src/actions";
 import { ISearchForm, ListingType } from "@/src/types";
 import { Separator } from "@/src/components/ui/separator";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Controller, useForm } from "react-hook-form";
 
 // const images = [
 //   "/photos/1.jpg",
@@ -51,7 +54,7 @@ export default function Main() {
     },
   });
 
-  const navigate = useNavigate();
+  const router = useRouter();
 
   const { data: cities = [], isLoading } = useQuery({
     queryKey: ["locations"],
@@ -59,9 +62,6 @@ export default function Main() {
     // enabled: false,
   });
 
-  console.log(form.watch());
-  console.log(form.getValues());
-  // bg-[url(../../landing-background.jpg)]
   return (
     <>
       <section className="max-w-screen-2xl xl:mx-auto -mt-28 h-screen md:max-h-[740px] xl:max-h-[800px]  bg-cover">
@@ -154,7 +154,7 @@ export default function Main() {
                         truthyValues,
                       ).toString();
                       console.log(queryStrings);
-                      navigate(`/properties?${queryStrings}`);
+                      router.push(`/properties?${queryStrings}`);
                     }}
                   >
                     Search

@@ -2,7 +2,7 @@ import { Card } from "@/src/components/ui/card";
 import Carousel from "./Carousel";
 import { Badge } from "@/src/components/ui/badge";
 import { Button } from "@/src/components/ui/button";
-import { PropertyCardProps } from "@/types";
+import { PropertyCardProps } from "@/src/types";
 
 const PropertyCard: React.FC<PropertyCardProps> = ({
   address,
