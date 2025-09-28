@@ -21,9 +21,6 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   title: "100 Khana",
   description: "A Platform for buy, rent, and sell Houses",
-  icons: {
-    icon: "/convex.svg",
-  },
 };
 
 export default function RootLayout({
