@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { ArrowUpRight } from "lucide-react";
 // import { Input } from "@heroui/input";
@@ -10,7 +10,13 @@ import {
   CardHeader,
 } from "@/src/components/ui/card";
 import { Button } from "@/src/components/ui/button";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/src/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/src/components/ui/select";
 import { useQuery } from "@tanstack/react-query";
 import { Input } from "@/src/components/ui/input";
 import { getCities } from "@/src/actions";
@@ -19,6 +25,7 @@ import { Separator } from "@/src/components/ui/separator";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
+import Image from "next/image";
 
 // const images = [
 //   "/photos/1.jpg",
@@ -63,12 +70,18 @@ export default function Main() {
 
   return (
     <>
-      <section className="max-w-screen-2xl xl:mx-auto -mt-28 h-screen md:max-h-[740px] xl:max-h-[800px]  bg-cover">
+      <section className="max-w-screen-2xl xl:mx-auto -mt-28 h-screen md:max-h-[740px] xl:max-h-[800px] relative">
+        <Image src="/landing-background.jpg" alt="Landing Background" fill  />
         <div className="relative h-full w-full flex items-center justify-center">
-          <div className="h-full w-full bg-black/50 dark:block absolute top-0 left-0 hidden z-0"></div>
+          <div className="h-full w-full dark:bg-black/50 dark:block absolute top-0 left-0 hidden z-0"></div>
           <div className="space-y-4 z-10">
             <div className="relative mx-6 max-w-5xl sm:mx-10 text-stone-800 text-center space-y-4">
-              <h1 className="text-2xl backdrop-blur-sm bg-gradient-to-b from-gray-50 to-transparent rounded-full border-2 border-gray-300/50 md:text-4xl md:px-10 py-6 font-semibold font-clash">
+              <h1
+                style={{
+                  fontFamily: "var(--font-clash-display)",
+                }}
+                className="text-2xl backdrop-blur-sm bg-gradient-to-b from-gray-50 to-transparent rounded-full border-2 border-gray-300/50 md:text-4xl md:px-10 py-6 font-semibold "
+              >
                 Find Your Perfect Space with{" "}
                 <span className=" text-primary-500">100-Khana </span>
               </h1>
@@ -82,15 +95,20 @@ export default function Main() {
               })}
               className="mx-10"
             >
-              <div className="min-w-full items-center bg-white dark:bg-zinc-800 flex rounded-lg p-2 ">
+              <div className="min-w-full items-center bg-background flex rounded-lg p-2 gap-2">
                 <div className="flex-1">
-                  <Select value={form.watch("listingType")[0]} onValueChange={(v) => form.setValue("listingType", [v])}>
+                  <Select
+                    value={form.watch("listingType")[0]}
+                    onValueChange={(v) => form.setValue("listingType", [v])}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Select listing type" />
                     </SelectTrigger>
                     <SelectContent>
                       {listingTypes.map((item) => (
-                        <SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>
+                        <SelectItem key={item.value} value={item.value}>
+                          {item.label}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -113,11 +131,13 @@ export default function Main() {
                   className="z-30 h-12 mx-1 dark:bg-gray-600"
                 />
                 <div className="flex-1">
-                  <Select onValueChange={(value) => {
-                    const [minPrice, maxPrice] = value.split(",");
-                    form.setValue("min_price", minPrice || "");
-                    form.setValue("max_price", maxPrice || "");
-                  }}>
+                  <Select
+                    onValueChange={(value) => {
+                      const [minPrice, maxPrice] = value.split(",");
+                      form.setValue("min_price", minPrice || "");
+                      form.setValue("max_price", maxPrice || "");
+                    }}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Price Range e.g. 5K - 10K" />
                     </SelectTrigger>
@@ -130,7 +150,9 @@ export default function Main() {
                         { label: "50K - 100K", value: "50000,100000" },
                         { label: "100K - 1M", value: "100000,1000000" },
                       ].map((item) => (
-                        <SelectItem key={item.value} value={item.value}>{item.label}</SelectItem>
+                        <SelectItem key={item.value} value={item.value}>
+                          {item.label}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -141,7 +163,6 @@ export default function Main() {
                 />
                 <div className="content-center">
                   <Button
-                    className="py-6"
                     onClick={() => {
                       const formValues = form.getValues();
                       const truthyValues = Object.fromEntries(
@@ -171,9 +192,6 @@ export default function Main() {
             <ArrowUpRight />
           </Link>
         </div>
-        {/* {  <div className="w-full h-screen flex items-center justify-center bg-black/80 fixed top-0 left-0 z-50">} */}
-
-        {/* {  </div>} */}
       </section>
 
       <section className="max-w-screen-2xl mx-auto my-12 p-6">
@@ -196,9 +214,7 @@ export default function Main() {
                   right buyer or tenant in no time.
                 </p>
               </CardFooter>
-              <Button className="min-w-full mt-8">
-                Post a Listing
-              </Button>
+              <Button className="min-w-full mt-8">Post a Listing</Button>
             </CardContent>
           </ShadowedCard>
           <ShadowedCard className="max-w-96 min-w-80 border border-default-300">
@@ -221,9 +237,7 @@ export default function Main() {
                   find your perfect home quickly and easily.
                 </p>
               </CardFooter>
-              <Button className="min-w-full mt-8">
-                Browse Properties
-              </Button>
+              <Button className="min-w-full mt-8">Browse Properties</Button>
             </CardContent>
           </ShadowedCard>
           <ShadowedCard className="max-w-96 min-w-80 border border-default-300">
@@ -247,9 +261,7 @@ export default function Main() {
                   inquiries.
                 </p>
               </CardFooter>
-              <Button className="min-w-full mt-8">
-                Rent Out Property
-              </Button>
+              <Button className="min-w-full mt-8">Rent Out Property</Button>
             </CardContent>
           </ShadowedCard>
         </div>

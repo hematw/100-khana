@@ -3,11 +3,11 @@ import Link from "next/link";
 
 export default function Footer() {
   return (
-    <footer className="w-full max-w-screen-2xl mx-auto bg-white dark:bg-zinc-900 text-gray-800 dark:text-white py-8 px-4 border-t">
+    <footer className="w-full max-w-screen-2xl mx-auto bg-background py-8 px-4 border-t">
       {/* Main Banner */}
       <div className="container mx-auto mb-12 text-center">
         <h1 className="text-3xl md:text-4xl font-bold mb-4">
-          From searching href settling, 100-Khana is with you!
+          From searching to settling, 100-Khana is with you!
         </h1>
       </div>
 

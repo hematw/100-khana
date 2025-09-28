@@ -193,7 +193,9 @@ function Properties() {
           ))
         ) : (
           <div className="col-span-full w-96">
-            <p className="text-center font-semibold font-clash text-2xl">
+            <p 
+              style={{fontFamily: "var(--font-clash-display)"}}
+            className="text-center font-semibold text-2xl">
               We couldn@apos;t find any properties
             </p>
             <p className="text-center">Try a different search</p>
