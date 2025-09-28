@@ -18,7 +18,7 @@ const [houses, setHouses] = useState<PropertyWithID[]>(()=> {
         houses.map((house: PropertyWithID) => (
           <PropertyCard
             key={house._id}
-            address={` ${house.city.name}, ${house.district.name}, ${house.road}, ${house.street}`}
+            address={` ${typeof house.city === 'string' ? house.city : (house.city as any)?.name || ''}, ${typeof house.district === 'string' ? house.district : (house.district as any)?.name || ''}, ${house.road}, ${house.street}`}
             price={Number(house.price)}
             listingType={house.listingType.join(", ")}
             images={house.images as string[]}

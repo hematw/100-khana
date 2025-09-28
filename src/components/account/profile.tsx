@@ -9,10 +9,9 @@ import { Skeleton } from "@/src/components/ui/skeleton";
 import { AtSign, Camera, CircleUser, Lock, Phone, User } from "lucide-react";
 import { Ref, useEffect, useRef, useState } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import axiosIns from "@/axios";
+import axiosIns from "@/src/axios";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { useAuth } from "@/contexts/auth-context";
-import { Profile } from "@/src/types";
+import { Profile as ProfileType } from "@/src/types";
 
 
 
@@ -23,7 +22,7 @@ async function getProfile(id: string) {
 }
 
 function Profile() {
-  const { user } = useAuth();
+  const user = { _id: "temp" }; // TODO: Replace with actual auth context
 
   const {
     data: profileData,
@@ -40,19 +39,15 @@ function Profile() {
       axiosIns.patch(`/users/${user._id}`, data, { withCredentials: true }),
     onSuccess: ({ data }) => {
       reset(data);
-      addToast({ title: "Profile Updated", color: "success" });
+      toast.success("Profile Updated");
     },
     onError: (err) => {
-      addToast({
-        title: "Something went wrong",
-        color: "primary",
-        description: err.message,
-      });
+      toast.error("Something went wrong: " + err.message);
     },
   });
 
   const [selectedFile, setSelectedFile] = useState<File>();
-  const fileInputRef = useRef<Ref<HTMLInputElement>>();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const profileUrl = selectedFile
     ? URL.createObjectURL(selectedFile)
     : profileData?.profile;
@@ -63,7 +58,7 @@ function Profile() {
     reset,
     watch,
     formState: { errors },
-  } = useForm<Profile>({
+  } = useForm<ProfileType>({
     defaultValues: profileData,
   });
 
@@ -77,7 +72,7 @@ function Profile() {
     }
   };
 
-  const onSubmit: SubmitHandler<Profile> = async (values) => {
+  const onSubmit: SubmitHandler<ProfileType> = async (values) => {
     const formData = new FormData();
     formData.append("firstName", values.firstName || "");
     formData.append("lastName", values.lastName || "");
@@ -106,10 +101,10 @@ function Profile() {
     <Card className="p-6 w-full max-w-3xl border border-default-300 rounded-lg shadow-md space-y-6">
       <h2 className="text-xl font-bold ">Edit Info</h2>
       <div className="relative w-24 h-24 mx-auto">
-        <Avatar
-          className="w-24 h-24"
-          src={profileUrl || profileData?.profile || "/profile-picture.png"}
-        />
+        <Avatar className="w-24 h-24">
+          <AvatarImage src={profileUrl || profileData?.profile || "/profile-picture.png"} />
+          <AvatarFallback>CN</AvatarFallback>
+        </Avatar>
         <Input
           type="file"
           className="hidden"
@@ -117,110 +112,118 @@ function Profile() {
           ref={fileInputRef as Ref<HTMLInputElement>}
         />
         <Button
-          isIconOnly
           size="sm"
           className="absolute bottom-0 right-0 bg-gray-200 p-1 rounded-full border"
-          onPress={() => fileInputRef.current?.click()}
+          onClick={() => fileInputRef.current?.click()}
         >
           <Camera className="w-4 h-4 text-gray-600" />
         </Button>
       </div>
-      <Form onSubmit={handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div className="grid grid-cols-2 gap-4 w-full">
-          <Input
-            variant="faded"
-            label="Username"
-            placeholder="@rezwan"
-            startContent={<User size={18} />}
-            isInvalid={!!errors.username}
-            errorMessage={errors.username?.message}
-            {...register("firstName", {
-              required: "First name is required",
-              pattern: {
-                value: /^[A-Z]+$/i,
-                message: "Username cannot contain symbols or numbers",
-              },
-            })}
-          />
-          <Input
-            variant="faded"
-            label="Email"
-            placeholder="rezwan@example.com"
-            startContent={<AtSign size={18} />}
-            isInvalid={!!errors.email}
-            errorMessage={errors.email?.message}
-            {...register("email", {
-              required: "Email is required",
-              pattern: {
-                value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                message: "Invalid email address",
-              },
-            })}
-          />
-          <Input
-            variant="faded"
-            placeholder="1234567890"
-            label="Phone Number"
-            startContent={<Phone size={18} />}
-            isInvalid={!!errors.phone}
-            errorMessage={errors.phone?.message}
-            {...register("phone", {
-              pattern: {
-                value: /^\+93(78|73|79|77|72|74|70)\d{7}$/,
-                message: "Invalid phone number",
-              },
-            })}
-          />
-          <Input
-            variant="faded"
-            label="First Name"
-            placeholder="Ahmad"
-            startContent={<CircleUser size={18} />}
-            errorMessage={errors.firstName?.message}
-            {...register("firstName", {
-              required: "First name is required",
-              pattern: {
-                value: /^[A-Z]+$/i,
-                message: "Name cannot contain symbols or numbers",
-              },
-            })}
-          />
-          <Input
-            variant="faded"
-            label="Last Name"
-            placeholder="Ahmadi"
-            startContent={<CircleUser size={18} />}
-            {...register("lastName", {
-              required: "Last name is required",
-              pattern: {
-                value: /^[A-Z]+$/i,
-                message: "Name cannot contain symbols or numbers",
-              },
-            })}
-          />
-          <Input
-            variant="faded"
-            label="Password"
-            placeholder="Password"
-            type="password"
-            startContent={<Lock size={18} />}
-          />
-          <Textarea
-            variant="faded"
-            label="Bio"
-            {...register("bio")}
-            placeholder="Write something about yourself..."
-          />
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Username</label>
+            <Input
+              placeholder="@rezwan"
+              {...register("firstName", {
+                required: "First name is required",
+                pattern: {
+                  value: /^[A-Z]+$/i,
+                  message: "Username cannot contain symbols or numbers",
+                },
+              })}
+            />
+            {errors.username && (
+              <p className="text-sm text-red-500">{errors.username.message}</p>
+            )}
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Email</label>
+            <Input
+              placeholder="rezwan@example.com"
+              {...register("email", {
+                required: "Email is required",
+                pattern: {
+                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                  message: "Invalid email address",
+                },
+              })}
+            />
+            {errors.email && (
+              <p className="text-sm text-red-500">{errors.email.message}</p>
+            )}
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Phone Number</label>
+            <Input
+              placeholder="1234567890"
+              {...register("phone", {
+                pattern: {
+                  value: /^\+93(78|73|79|77|72|74|70)\d{7}$/,
+                  message: "Invalid phone number",
+                },
+              })}
+            />
+            {errors.phone && (
+              <p className="text-sm text-red-500">{errors.phone.message}</p>
+            )}
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-medium">First Name</label>
+            <Input
+              placeholder="Ahmad"
+              {...register("firstName", {
+                required: "First name is required",
+                pattern: {
+                  value: /^[A-Z]+$/i,
+                  message: "Name cannot contain symbols or numbers",
+                },
+              })}
+            />
+            {errors.firstName && (
+              <p className="text-sm text-red-500">{errors.firstName.message}</p>
+            )}
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Last Name</label>
+            <Input
+              placeholder="Ahmadi"
+              {...register("lastName", {
+                required: "Last name is required",
+                pattern: {
+                  value: /^[A-Z]+$/i,
+                  message: "Name cannot contain symbols or numbers",
+                },
+              })}
+            />
+            {errors.lastName && (
+              <p className="text-sm text-red-500">{errors.lastName.message}</p>
+            )}
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Password</label>
+            <Input
+              placeholder="Password"
+              type="password"
+            />
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Bio</label>
+            <Textarea
+              {...register("bio")}
+              placeholder="Write something about yourself..."
+            />
+          </div>
         </div>
         <div className="flex justify-start space-x-4 mt-4">
-          <Button variant="bordered" color="primary">
+          <Button variant="outline">
             Cancel
           </Button>
-          <Button variant="solid" color="primary" type="submit">
+          <Button type="submit">
             Save
           </Button>
         </div>
-      </Form>
+      </form>
     </Card>
   );
 }

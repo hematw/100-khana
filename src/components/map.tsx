@@ -128,20 +128,20 @@ const MapComponent = ({
   return (
     <MapContainer
       className="-z-10"
-      center={[lat, lon]}
+      center={[lat, lon] as [number, number]}
       zoom={13}
       style={{ height: "350px", width: "100%" }}
     >
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-      <Marker position={[lat, lon]} icon={icons.house || icons.store}>
+      <Marker position={[lat, lon] as [number, number]} icon={icons.house || icons.store}>
         <Popup>House</Popup>
       </Marker>
       {/* Display Nearby Places */}
       {places.map((place) => (
         <Marker
           key={place.id}
-          position={[place?.lat, place?.lon]}
-          icon={icons[place.tags.amenity] || icons.house}
+          position={[place?.lat, place?.lon] as [number, number]}
+          icon={icons[place.tags.amenity as keyof typeof icons] || icons.house}
         >
           <Popup>
             <span className="capitalize">

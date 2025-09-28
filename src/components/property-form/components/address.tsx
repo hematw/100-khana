@@ -1,14 +1,12 @@
 import { Input } from "@/src/components/ui/input";
-import { PropertyForm } from "..";
-import { Controller, UseFormReturn } from "react-hook-form";
-import axiosIns from "@/axios";
+import { Controller } from "react-hook-form";
+import axiosIns from "@/src/axios";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/src/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/src/components/ui/select";
-// import { MapPin } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
-// import { Combobox } from "@/components/ui/combo-box";
+import { useFormContext } from "../context/FormContext";
 
 type TDistrict = {
   name: string;
@@ -30,7 +28,8 @@ async function getDistricts(cityId: string): Promise<TDistrict[]> {
   return response.data.districts;
 }
 
-function Address({ form }: { form: UseFormReturn<PropertyForm> }) {
+function Address() {
+  const { form } = useFormContext();
   const selectedCity = form.getValues("city");
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -50,7 +49,7 @@ function Address({ form }: { form: UseFormReturn<PropertyForm> }) {
     data: districts = [],
   } = useQuery({
     queryKey: ["districts", selectedCity],
-    queryFn: () => getDistricts(selectedCity),
+    queryFn: () => getDistricts(typeof selectedCity === 'string' ? selectedCity : selectedCity.name),
     staleTime: 1000 * 60 * 3,
     enabled: !!selectedCity,
   });
@@ -87,7 +86,7 @@ function Address({ form }: { form: UseFormReturn<PropertyForm> }) {
         control={form.control}
         name="city"
         render={({ field }) => (
-          <Select value={field.value} onValueChange={(v) => form.setValue("city", v)}>
+          <Select value={typeof field.value === 'string' ? field.value : field.value?.name} onValueChange={(v) => form.setValue("city", v)}>
             <SelectTrigger>
               <SelectValue placeholder="Select a city" />
             </SelectTrigger>

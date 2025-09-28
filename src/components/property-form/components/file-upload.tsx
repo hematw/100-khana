@@ -1,9 +1,8 @@
 import { ImagePlus, Trash2 } from "lucide-react";
 import { ChangeEventHandler, useEffect, useState } from "react";
-import { UseFormReturn } from "react-hook-form";
-import { PropertyForm } from "..";
 import { Button } from "@/src/components/ui/button";
 import { Card } from "@/src/components/ui/card";
+import { useFormContext } from "../context/FormContext";
 
 type FilePreview = {
   name: string;
@@ -11,7 +10,8 @@ type FilePreview = {
   url: string;
 };
 
-function FileUpload({ form }: { form: UseFormReturn<PropertyForm> }) {
+function FileUpload() {
+  const { form } = useFormContext();
   const [previews, setPreviews] = useState<FilePreview[]>([]);
 
   useEffect(() => {
@@ -53,7 +53,10 @@ function FileUpload({ form }: { form: UseFormReturn<PropertyForm> }) {
       "images",
       form
         .getValues("images")
-        .filter((file) => (file as File).name !== fileName)
+        .filter((file: any) => {
+          if (typeof file === 'string') return true;
+          return (file as File).name !== fileName;
+        })
     );
   };
 
@@ -83,9 +86,8 @@ function FileUpload({ form }: { form: UseFormReturn<PropertyForm> }) {
                 className="w-full h-full object-cover rounded-lg"
               />
               <Button
-                isIconOnly
                 className="absolute top-1 right-1 p-1 rounded-full shadow"
-                onPress={() => handleDelete(file.name)}
+                onClick={() => handleDelete(file.name)}
               >
                 <Trash2 size={18} />
               </Button>
@@ -124,9 +126,8 @@ function FileUpload({ form }: { form: UseFormReturn<PropertyForm> }) {
                       className="w-full h-full object-cover rounded-lg"
                     />
                     <Button
-                      isIconOnly
                       className="absolute top-1 right-1 p-1 rounded-full shadow"
-                      onPress={() => handleDelete(file.name)}
+                      onClick={() => handleDelete(file.name)}
                     >
                       <Trash2 size={18} />
                     </Button>
@@ -137,7 +138,7 @@ function FileUpload({ form }: { form: UseFormReturn<PropertyForm> }) {
           </>
         )}
         <div className="col-span-3">
-          <span className="text-xs text-primary-400 mt-2">{form.formState.errors.images?.message}</span>
+          <span className="text-xs text-primary-400 mt-2">{String(form.formState.errors.images?.message || '')}</span>
         </div>
 
       </div>

@@ -1,10 +1,10 @@
 import { Input } from "@/src/components/ui/input";
-import { PropertyForm } from "..";
-import { Controller, UseFormReturn } from "react-hook-form";
+import { Controller } from "react-hook-form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/src/components/ui/select";
 import { useQuery } from "@tanstack/react-query";
-import { getCategories } from "@/api";
+import { getCategories } from "@/src/actions";
 import { ListingType, TCategory } from "@/src/types";
+import { useFormContext } from "../context/FormContext";
 
 
 
@@ -16,7 +16,8 @@ const listingTypes: ListingType[] = [
 
 
 
-function AreaAndPrice({ form }: { form: UseFormReturn<PropertyForm> }) {
+function AreaAndPrice() {
+  const { form } = useFormContext();
   const {
     data: categories,
     error,

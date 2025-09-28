@@ -5,7 +5,7 @@ import { z } from "zod";
 import { Form } from "@/src/components/ui/form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Rooms from "./components/rooms";
-import FileUploadForm from "./components/file-upload";
+import FileUpload from "./components/file-upload";
 import AreaAndPrice from "./components/type-and-price";
 import { Card, CardHeader } from "@/src/components/ui/card";
 import { Button } from "@/src/components/ui/button";
@@ -23,8 +23,8 @@ import {
   WavesLadder,
 } from "lucide-react";
 import { toast } from "sonner";
-import { PropertyForm } from "@/src/types";
 import { useRouter } from "next/navigation";
+import { FormProvider } from "./context/FormContext";
 
 const FormSchema = z.object({
   category: z
@@ -37,15 +37,15 @@ const FormSchema = z.object({
   numOfKitchens: z.string().min(1, { message: "This field is required" }),
   numOfBaths: z.string().min(1, { message: "This field is required" }),
   images: z
-    .array(z.instanceof(File))
+    .array(z.union([z.string(), z.instanceof(File)]))
     .min(1, { message: "At least one image is required" }),
   area: z.string().min(1, { message: "This field is required" }),
   price: z.string().min(1, { message: "This field is required" }),
   listingType: z
     .array(z.string())
     .min(1, { message: "This field is required" }),
-  facilities: z.array(z.string()).min(1, { message: "This field is required" }),
-  city: z.string().min(1, { message: "This field is required" }),
+  facilities: z.array(z.union([z.string(), z.object({ _id: z.string(), name: z.string(), description: z.string(), icon: z.string() })])).min(1, { message: "This field is required" }),
+  city: z.union([z.string().min(1, { message: "This field is required" }), z.object({ name: z.string() })]),
   district: z.string().min(1, { message: "This field is required" }),
   road: z.string().min(1, { message: "This field is required" }),
   street: z.string().min(1, { message: "This field is required" }),
@@ -55,6 +55,8 @@ const FormSchema = z.object({
   totalFloors: z.string().min(1, { message: "This field is required" }),
   description: z.array(z.string()),
 });
+
+type FormData = z.infer<typeof FormSchema>;
 const icons = [
   <MapPinHouse size={16} key="map-pin-house" />,
   <Gem size={16} key="gem" />,
@@ -117,7 +119,7 @@ function AddHome() {
 
 
   const TOTAL_STEPS = 6;
-  const form = useForm<PropertyForm>({
+  const form = useForm<FormData>({
     resolver: zodResolver(FormSchema),
     mode: "all",
     defaultValues: {
@@ -144,8 +146,8 @@ function AddHome() {
   });
   if (!isLoggedIn) return null;
 
-  const onSubmit: SubmitHandler<PropertyForm> = async (
-    data: PropertyForm
+  const onSubmit: SubmitHandler<FormData> = async (
+    data: FormData
   ) => {
     console.log(data);
     try {
@@ -156,16 +158,27 @@ function AddHome() {
         if (key === "images") {
           // Append each file individually
           data.images.forEach((file) => {
-            formData.append(`images`, file);
+            if (typeof file === 'string') {
+              formData.append(`images`, file);
+            } else {
+              formData.append(`images`, file);
+            }
           });
         } else if (Array.isArray(value)) {
           // Append each item in the array individually
           value.forEach((item) => {
-            formData.append(key, item);
+            if (typeof item === 'string') {
+              formData.append(key, item);
+            } else if (typeof item === 'object' && item !== null) {
+              formData.append(key, JSON.stringify(item));
+            }
           });
+        } else if (typeof value === 'object' && value !== null) {
+          // Handle object values (like city)
+          formData.append(key, JSON.stringify(value));
         } else {
           // Append non-array fields
-          formData.append(key, value);
+          formData.append(key, String(value));
         }
       });
 
@@ -254,57 +267,50 @@ function AddHome() {
                   ))}
                 </div>
               </div>
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="w-full items-stretch">
-                {/* <form onSubmit={form.handleSubmit(onSubmit)}> */}
-                <div
-                  className="grid grid-cols-2 gap-x-4 gap-y-8 justify-between"
-                  key={step} // Use step as the key to trigger re-mounting
-                >
-                  {step === 1 && <Address form={form} />}
-
-                  {step === 2 && <AreaAndPrice form={form} />}
-
-                  {step === 3 && <Rooms form={form} />}
-
-                  {step === 4 && <Facilities form={form} />}
-
-                  {step === 5 && <OtherDescription form={form} />}
-
-                  {step === 6 && <FileUploadForm form={form} />}
-                </div>
-
-                {/* Navigation Buttons */}
-                <div className="flex justify-between mt-8">
-                  {/* {step > 1 && ( */}
-                  <Button
-                    size="lg"
-                    type="button"
-                    onClick={prevStep}
-                    variant={"outline"}
-                  >
-                    Back
-                  </Button>
-                  {/* )} */}
-                  {step < TOTAL_STEPS ? (
-                    <Button
-                      size="lg"
-                      type="button"
-                      onClick={() => {
-                        nextStep();
-                      }}
+              <FormProvider form={form}>
+                <Form {...form}>
+                  <form onSubmit={form.handleSubmit(onSubmit)} className="w-full items-stretch">
+                    <div
+                      className="grid grid-cols-2 gap-x-4 gap-y-8 justify-between"
+                      key={step} // Use step as the key to trigger re-mounting
                     >
-                      Next
-                    </Button>
-                  ) : (
-                    <Button size="lg" type="submit">
-                      Submit
-                    </Button>
-                  )}
-                </div>
-                {/* </form> */}
-              </form>
-              </Form>
+                      {step === 1 && <Address />}
+                      {step === 2 && <AreaAndPrice />}
+                      {step === 3 && <Rooms />}
+                      {step === 4 && <Facilities />}
+                      {step === 5 && <OtherDescription />}
+                      {step === 6 && <FileUpload />}
+                    </div>
+
+                    {/* Navigation Buttons */}
+                    <div className="flex justify-between mt-8">
+                      <Button
+                        size="lg"
+                        type="button"
+                        onClick={prevStep}
+                        variant={"outline"}
+                      >
+                        Back
+                      </Button>
+                      {step < TOTAL_STEPS ? (
+                        <Button
+                          size="lg"
+                          type="button"
+                          onClick={() => {
+                            nextStep();
+                          }}
+                        >
+                          Next
+                        </Button>
+                      ) : (
+                        <Button size="lg" type="submit">
+                          Submit
+                        </Button>
+                      )}
+                    </div>
+                  </form>
+                </Form>
+              </FormProvider>
             </>
           )}
         </div>

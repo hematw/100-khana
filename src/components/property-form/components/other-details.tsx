@@ -1,9 +1,9 @@
 import { Input } from "@/src/components/ui/input";
-import { UseFormReturn } from "react-hook-form";
-import { PropertyForm } from "..";
 import { ChangeEvent } from "react";
+import { useFormContext } from "../context/FormContext";
 
-function OtherDescription({ form }: { form: UseFormReturn<PropertyForm> }) {
+function OtherDescription() {
+  const { form } = useFormContext();
   const descValue = form.getValues("description");
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>, index: number) => {
@@ -15,67 +15,67 @@ function OtherDescription({ form }: { form: UseFormReturn<PropertyForm> }) {
       <h3>If you have further description write it here.</h3>
       <ul>
         <li className="w-full">
-          <Input
-            size="sm"
-            label="1."
-            variant="underlined"
-            value={descValue[0] || ""}
-            onChange={(e) => handleChange(e, 0)}
-          />
+          <div className="space-y-2">
+            <label className="text-sm font-medium">1.</label>
+            <Input
+              value={descValue[0] || ""}
+              onChange={(e) => handleChange(e, 0)}
+            />
+          </div>
         </li>
         <li className="w-full">
-          <Input
-            size="sm"
-            label="2."
-            variant="underlined"
-            value={descValue[1] || ""}
-            onChange={(e) => handleChange(e, 1)}
-          />
+          <div className="space-y-2">
+            <label className="text-sm font-medium">2.</label>
+            <Input
+              value={descValue[1] || ""}
+              onChange={(e) => handleChange(e, 1)}
+            />
+          </div>
         </li>
         <li className="w-full">
-          <Input
-            size="sm"
-            label="3."
-            variant="underlined"
-            value={descValue[2] || ""}
-            onChange={(e) => handleChange(e, 2)}
-          />
+          <div className="space-y-2">
+            <label className="text-sm font-medium">3.</label>
+            <Input
+              value={descValue[2] || ""}
+              onChange={(e) => handleChange(e, 2)}
+            />
+          </div>
         </li>
         <li className="w-full">
-          <Input
-            size="sm"
-            label="4."
-            variant="underlined"
-            value={descValue[3] || ""}
-            onChange={(e) => handleChange(e, 3)}
-          />
+          <div className="space-y-2">
+            <label className="text-sm font-medium">4.</label>
+            <Input
+              value={descValue[3] || ""}
+              onChange={(e) => handleChange(e, 3)}
+            />
+          </div>
         </li>
         <li className="w-full">
-          <Input
-            size="sm"
-            label="5."
-            variant="underlined"
-            value={descValue[4] || ""}
-            onChange={(e) => handleChange(e, 4)}
-          />
+          <div className="space-y-2">
+            <label className="text-sm font-medium">5.</label>
+            <Input
+              value={descValue[4] || ""}
+              onChange={(e) => handleChange(e, 4)}
+            />
+          </div>
         </li>
         <li className="w-full">
-          <Input
-            size="sm"
-            label="6."
-            variant="underlined"
-            value={descValue[5] || ""}
-            onChange={(e) => handleChange(e, 5)}
-          />
+          <div className="space-y-2">
+            <label className="text-sm font-medium">6.</label>
+            <Input
+              value={descValue[5] || ""}
+              onChange={(e) => handleChange(e, 5)}
+            />
+          </div>
         </li>
         <li className="w-full">
-          <Input
-            size="sm"
-            label="7."
-            variant="underlined"
-            value={descValue[6] || ""}
-            onChange={(e) => handleChange(e, 6)}
-          />
+          <div className="space-y-2">
+            <label className="text-sm font-medium">7.</label>
+            <Input
+              value={descValue[6] || ""}
+              onChange={(e) => handleChange(e, 6)}
+            />
+          </div>
         </li>
       </ul>
     </div>

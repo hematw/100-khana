@@ -1,10 +1,11 @@
-import { Controller, UseFormReturn } from "react-hook-form";
-import axiosIns from "@/axios";
+import { Controller } from "react-hook-form";
+import axiosIns from "@/src/axios";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/src/components/ui/select";
 import { Badge } from "@/src/components/ui/badge";
 import { useQuery } from "@tanstack/react-query";
-import icons from "@/lib/icons";
-import { PropertyForm, Facility } from "@/src/types";
+import icons from "@/src/lib/icons";
+import { Facility } from "@/src/types";
+import { useFormContext } from "../context/FormContext";
 
 
 
@@ -13,7 +14,8 @@ async function getFacilities(): Promise<Facility[]> {
   return data.facilities;
 }
 
-function Facilities({ form }: { form: UseFormReturn<PropertyForm> }) {
+function Facilities() {
+  const { form } = useFormContext();
   const {
     data: facilities,
     error,
@@ -39,7 +41,11 @@ function Facilities({ form }: { form: UseFormReturn<PropertyForm> }) {
         name="facilities"
         render={({ field }) => (
           <div className="space-y-2">
-            <Select value={field.value?.[0]} onValueChange={(v) => form.setValue("facilities", Array.from(new Set([...(field.value || []), v])))}>
+            <Select value={Array.isArray(field.value) ? (typeof field.value[0] === 'string' ? field.value[0] : field.value[0]?._id) : undefined} onValueChange={(v) => {
+              const currentValue = Array.isArray(field.value) ? field.value : [];
+              const stringValues = currentValue.map(item => typeof item === 'string' ? item : item._id);
+              form.setValue("facilities", Array.from(new Set([...stringValues, v])));
+            }}>
               <SelectTrigger>
                 <SelectValue placeholder="Select a facility" />
               </SelectTrigger>
@@ -50,7 +56,8 @@ function Facilities({ form }: { form: UseFormReturn<PropertyForm> }) {
               </SelectContent>
             </Select>
             <div className="flex flex-wrap gap-2">
-              {(field.value || []).map((id: string) => {
+              {(Array.isArray(field.value) ? field.value : []).map((item) => {
+                const id = typeof item === 'string' ? item : item._id;
                 const f = facilities?.find((x) => x._id === id)
                 if (!f) return null
                 const Icon = icons[f.icon as keyof typeof icons]

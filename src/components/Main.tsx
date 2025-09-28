@@ -11,7 +11,6 @@ import {
 } from "@/src/components/ui/card";
 import { Button } from "@/src/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/src/components/ui/select";
-import { Form } from "@/src/components/ui/form";
 import { useQuery } from "@tanstack/react-query";
 import { Input } from "@/src/components/ui/input";
 import { getCities } from "@/src/actions";
@@ -77,9 +76,9 @@ export default function Main() {
                 Buy, Rent, or Mortgage—All in One Place!
               </p>
             </div>
-            <Form
+            <form
               onSubmit={form.handleSubmit(() => {
-                searchQuery.refetch();
+                // Handle form submission
               })}
               className="mx-10"
             >
@@ -161,7 +160,7 @@ export default function Main() {
                   </Button>
                 </div>
               </div>
-            </Form>
+            </form>
           </div>
 
           <Link
@@ -197,7 +196,7 @@ export default function Main() {
                   right buyer or tenant in no time.
                 </p>
               </CardFooter>
-              <Button className="min-w-full mt-8 " color="primary">
+              <Button className="min-w-full mt-8">
                 Post a Listing
               </Button>
             </CardContent>
@@ -222,7 +221,7 @@ export default function Main() {
                   find your perfect home quickly and easily.
                 </p>
               </CardFooter>
-              <Button className="min-w-full mt-8 " color="primary">
+              <Button className="min-w-full mt-8">
                 Browse Properties
               </Button>
             </CardContent>
@@ -248,7 +247,7 @@ export default function Main() {
                   inquiries.
                 </p>
               </CardFooter>
-              <Button className="min-w-full mt-8 " color="primary">
+              <Button className="min-w-full mt-8">
                 Rent Out Property
               </Button>
             </CardContent>

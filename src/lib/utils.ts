@@ -5,7 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-export function saveOrRemoveToWishlist<T>(key: string, value: T) {
+export function saveOrRemoveToWishlist<T extends { _id: string }>(key: string, value: T) {
   const savedData = localStorage.getItem(key);
 
   if (savedData) {
@@ -23,7 +23,7 @@ export function saveOrRemoveToWishlist<T>(key: string, value: T) {
   }
 }
 
-export function removeFromWishlist<T>(key: string, value: T) {
+export function removeFromWishlist<T extends { _id: string }>(key: string, value: T) {
   const savedData = localStorage.getItem(key);
 
   if (savedData) {
